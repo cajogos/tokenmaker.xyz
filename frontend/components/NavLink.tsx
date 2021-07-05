@@ -1,7 +1,13 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-const NavLink = ({ path, text, title}) =>
+type NavLinkProps = {
+    path: string,
+    text: string,
+    title: string
+};
+
+const NavLink = ({ path, text, title }: NavLinkProps) =>
 {
     const { asPath } = useRouter();
 

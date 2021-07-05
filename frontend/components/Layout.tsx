@@ -1,7 +1,11 @@
 import Header from './Header';
 import Footer from './Footer';
 
-const Layout = ({ children }) =>
+type LayoutProps = {
+    children: JSX.Element
+};
+
+const Layout = ({ children }: LayoutProps) =>
 {
     return (
         <div className="site-wrapper">

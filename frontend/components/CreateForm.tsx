@@ -1,15 +1,19 @@
 import React from 'react';
 
-class CreateForm extends React.Component
+type CreateFormProps = {};
+type CreateFormState = {};
+
+class CreateForm extends React.Component<CreateFormProps, CreateFormState>
 {
-    constructor(props)
+    constructor(props: CreateFormProps)
     {
         super(props);
     }
 
-    onFormSubmission(e)
+    onFormSubmission(e: React.FormEvent<HTMLFormElement>)
     {
         e.preventDefault();
+        console.log(this);
     }
 
     render()

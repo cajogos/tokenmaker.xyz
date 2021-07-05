@@ -1,11 +1,14 @@
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+
+// Components
+import Layout from '../components/Layout'
+
 // Styles
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/main.scss';
 
-import Head from 'next/head';
-import Layout from '../components/Layout'
-
-const MyApp = ({ Component, pageProps }) =>
+const MyApp = ({ Component, pageProps }: AppProps) =>
 {
     return (
         <>

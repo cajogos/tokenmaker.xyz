@@ -1,8 +1,11 @@
 import React from 'react';
 
-class WalletButton extends React.Component
+type WalletButtonProps = {};
+type WalletButtonState = {};
+
+class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
 {
-    constructor(props)
+    constructor(props: WalletButtonProps)
     {
         super(props);
     }
