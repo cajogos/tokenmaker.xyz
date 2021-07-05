@@ -3,9 +3,11 @@
 ## TODOs
 
 - Nextjs project with typescript
-- Index page
-- Create page
-- Tutorial page
 - Wallet connect component
 - Testing suite implemented
 - Frontend tests
+- Page: Index
+- Page: Create
+- Page: Tutorial
+- Page: FAQs
+- Wallet: Connect to MetaMask
