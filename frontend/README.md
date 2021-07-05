@@ -7,6 +7,6 @@
 - Testing suite implemented
 - Frontend tests
 - Page: Create (started)
-- Page: Tutorial
-- Page: FAQs
+- Page: Tutorial (started)
+- Page: FAQs (started)
 - Wallet: Connect to MetaMask
