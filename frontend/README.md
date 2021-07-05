@@ -2,8 +2,6 @@
 
 ## TODOs
 
-- Convert to TypeScript
-
 - Wallet connect component
 - Wallet: Connect to MetaMask
 - Testing suite implemented

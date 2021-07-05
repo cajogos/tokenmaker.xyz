@@ -2,12 +2,8 @@
 
 ## TODOs
 
-- Frontend creation form
-- Implement using TypeScript
-- Frontend FAQs
-- Connect to Wallet
-- Solidity compiler
-- Solidity contracts compiled
+- [Frontend TODOs](tree/main/frontend)
+- [Compiler TODOs](tree/main/compiler)
 
 ---
 
