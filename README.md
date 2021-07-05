@@ -4,6 +4,8 @@
 
 - [Frontend TODOs](./frontend)
 - [Compiler TODOs](./compiler)
+- Testing suites
+- Deploy contract to Ethereum testnets
 
 ---
 
