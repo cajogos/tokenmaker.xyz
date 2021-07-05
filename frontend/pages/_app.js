@@ -1,5 +1,6 @@
 // Styles
 import 'bootstrap/dist/css/bootstrap.css';
+import '../styles/main.scss';
 
 import Head from 'next/head';
 import Layout from '../components/Layout'
