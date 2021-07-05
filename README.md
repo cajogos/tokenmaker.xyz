@@ -2,8 +2,8 @@
 
 ## TODOs
 
-- [Frontend TODOs](tree/main/frontend)
-- [Compiler TODOs](tree/main/compiler)
+- [Frontend TODOs](./tree/main/frontend)
+- [Compiler TODOs](./tree/main/compiler)
 
 ---
 
