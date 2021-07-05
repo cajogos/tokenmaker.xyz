@@ -1,31 +1,50 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
+// Styles
+import headerStyles from '../styles/Header.module.scss'
+
+// Components
+import WalletButton from './WalletButton';
+
 const Header = () => {
     return (
         <header class="p-3 bg-dark text-white">
             <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                        {/* Logo goes here */}
-                    </a>
+                    <Link href="/">
+                        <a class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                            <div className={headerStyles.logo}>
+                                <Image src="/images/ethereum.svg" width="24" height="24" />
+                                <span>Tokenmaker.xyz</span>
+                                <small>Decentralised-Tokens-as-a-Service</small>
+                            </div>
+                        </a>
+                    </Link>
                     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                         <li>
-                            <a href="#" class="nav-link px-2 text-secondary">Home</a>
+                            <Link href="/">
+                                <a class="nav-link px-2 text-secondary">Home</a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" class="nav-link px-2 text-white">Features</a>
+                            <Link href="/create">
+                                <a class="nav-link px-2 text-white">Create a Token</a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" class="nav-link px-2 text-white">Pricing</a>
+                            <Link href="/tutorial">
+                                <a class="nav-link px-2 text-white">Learn*</a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="#" class="nav-link px-2 text-white">FAQs</a>
-                        </li>
-                        <li>
-                            <a href="#" class="nav-link px-2 text-white">About</a>
+                            <Link href="/faqs">
+                                <a class="nav-link px-2 text-white">FAQs</a>
+                            </Link>
                         </li>
                     </ul>         
                     <div class="text-end">
-                        <button type="button" class="btn btn-outline-light me-2">Login</button>
-                        <button type="button" class="btn btn-warning">Sign-up</button>
+                        <WalletButton />
                     </div>
                 </div>
             </div>
