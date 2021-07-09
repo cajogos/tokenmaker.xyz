@@ -1,44 +1,65 @@
 import React from 'react';
 import MetaMaskConnector from '../classes/MetaMaskConnector';
+import IMetaMaskListener from '../interfaces/IMetaMaskListener';
 
 type WalletButtonProps = {};
 type WalletButtonState = {
     walletStatus: number,
-    connected: boolean
+    connected: boolean,
+    connectedAccount: string | null,
+    connectedNetwork: number | null
 };
 
-class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
+class WalletButton extends React.Component<WalletButtonProps, WalletButtonState> implements IMetaMaskListener
 {
     constructor(props: WalletButtonProps)
     {
         super(props);
         this.state = {
             walletStatus: MetaMaskConnector.STATE_NOT_INSTALLED,
-            connected: false
+            connected: false,
+            connectedAccount: null,
+            connectedNetwork: null
         };
 
-        MetaMaskConnector.getInstance();
+        MetaMaskConnector.addListener(this);
     }
 
-    componentDidMount()
+    public componentDidMount(): void
+    {
+        this.populateStateWithWallet();
+    }
+
+    private populateStateWithWallet()
     {
         this.setState({
-            walletStatus: MetaMaskConnector.getState()
+            walletStatus: MetaMaskConnector.getState(),
+            connected: MetaMaskConnector.getInstance().isConnected(),
+            connectedAccount: MetaMaskConnector.getInstance().getCurrentAccount(),
+            connectedNetwork: MetaMaskConnector.getInstance().getCurrentNetwork()
         });
     }
 
     async handleClick()
     {
-        if (MetaMaskConnector.getInstance().isConnected())
+        if (!this.state.connected)
         {
-            this.setState({
-                walletStatus: MetaMaskConnector.getState()
-            });
+            let connected = await MetaMaskConnector.getInstance().requestAccounts();
+            if (connected)
+            {
+                this.populateStateWithWallet();
+            }
         }
-        else
-        {
-            // Initialise the connection
-        }
+    }
+
+    handleAccountChangedEvent(account: string | null): void
+    {
+        this.populateStateWithWallet();
+    }
+
+    handleNetworkChangedEvent(network: number | null): void
+    {
+        this.populateStateWithWallet();
     }
 
     render()
@@ -50,9 +71,15 @@ class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
                         <span>Install MetaMask</span>
                     </a>
                     :
-                    <button onClick={this.handleClick.bind(this)} className="btn btn-outline-light">
-                        <span>{this.state.connected ? 'Connected' : 'Connect Wallet'}</span>
-                    </button>
+                    <>
+                        <small className="text-danger fw-bold mx-3">{MetaMaskConnector.getNetworkName(this.state.connectedNetwork)}</small>
+                        <button onClick={this.handleClick.bind(this)} className="btn btn-outline-light">
+                            <span>{this.state.connected ?
+                                this.state.connectedAccount?.substr(0, 10) + '...'
+                                :
+                                'Connect Your Wallet'}</span>
+                        </button>
+                    </>
                 }
             </>
         );
