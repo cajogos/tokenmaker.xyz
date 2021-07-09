@@ -16,6 +16,12 @@ declare interface ProviderRpcError extends Error
     data?: unknown;
 }
 
+declare interface ProviderMessage
+{
+    type: string;
+    data: unknown;
+}
+
 declare const ethereum: {
     isMetaMask: boolean,
     networkVersion: string,
