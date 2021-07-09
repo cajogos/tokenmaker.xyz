@@ -40,7 +40,7 @@ const Header = () =>
                         <li className="nav-item">
                             <NavLink path="/faqs" text="FAQs" title="Get help to the most frequent questions" />
                         </li>
-                    </ul>         
+                    </ul>
                     <div className="text-end">
                         <WalletButton />
                     </div>

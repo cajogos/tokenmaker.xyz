@@ -9,3 +9,10 @@
 - Page: Create (started)
 - Page: Tutorial (started)
 - Page: FAQs (started)
+
+### MetaMask Wallet
+
+- States:
+  - Not installed (Install MetaMask)
+  - Not connected (Connect Wallet)
+  - Connected (Wallet Connected)
