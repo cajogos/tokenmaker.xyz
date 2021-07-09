@@ -11,7 +11,6 @@ declare interface ConnectInfo
 
 declare interface ProviderRpcError extends Error
 {
-    message: string;
     code: number;
     data?: unknown;
 }
@@ -22,6 +21,7 @@ declare interface ProviderMessage
     data: unknown;
 }
 
+// https://eips.ethereum.org/EIPS/eip-1193#request
 declare const ethereum: {
     isMetaMask: boolean,
     networkVersion: string,

@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -8,11 +9,16 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) =>
 {
     return (
-        <div className="site-wrapper">
-            <Header />
-            <div className="content-wrapper container">{children}</div>
-            <Footer />
-        </div>
+        <>
+            <Head>
+                <link rel="shortcut icon" href="/favicon.ico" />
+            </Head>
+            <div className="site-wrapper">
+                <Header />
+                <div className="content-wrapper container">{children}</div>
+                <Footer />
+            </div>
+        </>
     );
 };
 
