@@ -1,4 +1,5 @@
 import IMetaMaskListener from '../interfaces/IMetaMaskListener';
+import Web3 from 'web3';
 
 class MetaMaskConnector
 {
@@ -22,6 +23,8 @@ class MetaMaskConnector
     private currentNetwork: number | null = null; // The currently connected chain ID
     private currentAccount: string | null = null; // The currently selected account address
 
+    private web3: Web3 | null = null; // Web3 provider
+
     // Listeners of the wallet
     private listeners: IMetaMaskListener[] = [];
     public static addListener(listener: IMetaMaskListener): void
@@ -36,6 +39,7 @@ class MetaMaskConnector
         if (this.state !== MetaMaskConnector.STATE_NOT_INSTALLED)
         {
             this.attachEvents();
+            this.initWeb3();
         }
     }
 
@@ -106,6 +110,13 @@ class MetaMaskConnector
                 console.log('ethereum disconnect event', error);
             });
         }
+    }
+
+    private initWeb3()
+    {
+        this.web3 = new Web3(Web3.givenProvider);
+        // https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html#deploy
+        // https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html#contract-send
     }
 
     public async requestAccounts(): Promise<boolean>
