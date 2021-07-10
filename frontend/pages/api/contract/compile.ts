@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { StatusCodes, ReasonPhrases } from 'http-status-codes';
+import Contract from '../../../classes/Contract';
+import ERC20Basic from '../../../classes/contract/ERC20Basic';
+import { SolidityCompilerResult } from '../../../classes/SolidityCompiler';
 
 const ERROR_NO_CONTRACT_TYPE = 601;
+const ERROR_INVALID_CONTRACT = 602;
 const ERROR_NO_TOKEN_NAME = 602;
 const ERROR_NO_TOKEN_SYMBOL = 603;
 
@@ -25,25 +29,42 @@ export default (req: NextApiRequest, res: NextApiResponse<ExpectedResponse>) =>
     res.status(StatusCodes.OK);
     const body = req.body;
 
+    // Validate the contract type
     let contractType = body.contractType?.trim();
     if (!contractType)
     {
         return DisplayError(res, {
             errorCode: ERROR_NO_CONTRACT_TYPE,
-            errorMessage: 'No contract type provided'
+            errorMessage: 'No contract type provided.'
         });
     }
 
+    let contract: ERC20Basic | null = null;
+    switch (contractType)
+    {
+        case 'ERC20Basic':
+            contract = new ERC20Basic();
+            contract.setTokenName('TestName');
+            contract.setTokenSymbol('TEST');
+            break;
+
+        // Given contract type is invalid
+        default:
+            return DisplayError(res, {
+                errorCode: ERROR_INVALID_CONTRACT,
+                errorMessage: `The contract ${contractType} is an invalid type.`
+            });
+    }
+
+    let result: SolidityCompilerResult = contract.compile();
 
     // TODO Check the requirements for each given contract
     let tokenName = body.tokenName;
     let tokenSymbol = body.tokenSymbol;
 
-    console.log(body);
-
     let input = { contractType, tokenName, tokenSymbol };
-    let output = {};
-    // let result = ;
-
+    let output = {
+        compiled: result
+    };
     res.json({ success: true, result: { input, output } });
 };
