@@ -4,11 +4,19 @@ type CompilerSettings = {
     outputSelection: object
 };
 
+type ContractResult = {
+    [globalName: string]: {
+        abi: any,
+        bytecode: any,
+        deployedByteCode: any,
+        gasEstimates: any
+    }
+}
+
 export type SolidityCompilerResult = {
-    abi: any,
-    bytecode: any,
-    deployedByteCode: any,
-    gasEstimates: any
+    contracts: {
+        [globalName: string]: ContractResult
+    }
 };
 
 class SolidityCompiler
@@ -37,16 +45,22 @@ class SolidityCompiler
 
         const compiled: string = solc.compile(processed);
         const parsed: CompilerOutput = JSON.parse(compiled);
-        console.log(parsed);
 
-        const contract = parsed.contracts[contractName][contractName];
+        const compiledContracts = parsed.contracts[contractName];
 
-        return {
-            abi: contract.abi,
-            bytecode: contract.evm?.bytecode,
-            deployedByteCode: contract.evm?.deployedBytecode,
-            gasEstimates: contract.evm?.gasEstimates
-        };
+        let contracts: ContractResult = {};
+        for (var key in compiledContracts)
+        {
+            let contract = compiledContracts[key];
+            contracts[key] = {
+                abi: contract.abi,
+                bytecode: contract.evm?.bytecode,
+                deployedByteCode: contract.evm?.deployedBytecode,
+                gasEstimates: contract.evm?.gasEstimates
+            };
+        }
+
+        return { contracts };
     }
 }
 
