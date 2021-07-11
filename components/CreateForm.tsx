@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import React, { BaseSyntheticEvent } from 'react';
 import { FaCheck, FaRocket } from 'react-icons/fa';
 import Web3 from 'web3';
+import ContractDeployer from '../classes/ContractDeployer';
 
 type CreateFormProps = {};
 type CreateFormState = {
@@ -59,7 +60,11 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                 {
                     if (parsed.success)
                     {
-                        this.deployContract(parsed.result);
+                        if (typeof parsed.result !== 'undefined')
+                        {
+                            const output = parsed.result.output;
+                            ContractDeployer.deploy(output.compiled.contracts[this.state.contractType])
+                        }
                     }
                 });
             }

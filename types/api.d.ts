@@ -5,7 +5,13 @@ declare type APIError = {
 
 declare type ValidResult = {
     input: object,
-    output: object
+    output: {
+        compiled: {
+            contracts: {
+                [globalName: string]: CompiledContract
+            }
+        }
+    }
 };
 
 declare type ExpectedResponse = {
@@ -13,3 +19,10 @@ declare type ExpectedResponse = {
     result?: ValidResult
     error?: APIError
 };
+
+declare type CompiledContract = {
+    abi: any,
+    bytecode: any,
+    deployedByteCode: any,
+    gasEstimates: any
+}
