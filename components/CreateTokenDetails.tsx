@@ -1,14 +1,26 @@
 import React from 'react';
 import { FaInfoCircle, FaRocket, FaExclamationTriangle } from 'react-icons/fa';
 
-type CreateTokenDetailsProps = {};
-type CreateTokenDetailsState = {};
+type CreateTokenDetailsProps = {
+    disabled: boolean
+};
+type CreateTokenDetailsState = {
+    readyToDeploy: boolean
+};
 
 class CreateTokenDetails extends React.Component<CreateTokenDetailsProps, CreateTokenDetailsState>
 {
     constructor(props: CreateTokenDetailsProps)
     {
         super(props);
+        this.state = {
+            readyToDeploy: true
+        };
+    }
+
+    async deployContract()
+    {
+        // ContractDeployer.deploy(output.compiled.contracts[this.state.contractType])
     }
 
     render()
@@ -31,7 +43,9 @@ class CreateTokenDetails extends React.Component<CreateTokenDetailsProps, Create
                                 <span className="small"><strong><FaExclamationTriangle /> Status: </strong> Not Deployed</span>
                             </div>
                             <div className="col text-end">
-                                <button className="btn btn-sm btn-primary">
+                                <button className="btn btn-sm btn-primary"
+                                    onClick={this.deployContract.bind(this)}
+                                    disabled={!this.state.readyToDeploy || this.props.disabled}>
                                     <span><FaRocket /> Deploy Your Contract!</span>
                                 </button>
                             </div>

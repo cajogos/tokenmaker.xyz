@@ -4,7 +4,9 @@ import { FaCheck, FaRocket } from 'react-icons/fa';
 import Web3 from 'web3';
 import ContractDeployer from '../classes/ContractDeployer';
 
-type CreateFormProps = {};
+type CreateFormProps = {
+    disabled: boolean
+};
 type CreateFormState = {
     contractType: string,
     params: {
@@ -101,13 +103,13 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                 <>
                     <div className="mb-3">
                         <label className="form-label">Token Name</label>
-                        <input type="text" required className="form-control" aria-describedby="tokenNameHelp"
+                        <input type="text" required className="form-control" aria-describedby="tokenNameHelp" disabled={this.props.disabled}
                             defaultValue={this.state.tokenName} onChange={(e) => this.handleParamChange(e, 'tokenName')} />
                         <div id="tokenNameHelp" className="form-text">Choose a suitable name for your new token. E.g. "Westminter Token".</div>
                     </div>
                     <div className="mb-3">
                         <label className="form-label">Token Symbol</label>
-                        <input type="text" required className="form-control" aria-describedby="tokenSymbolHelp"
+                        <input type="text" required className="form-control" aria-describedby="tokenSymbolHelp" disabled={this.props.disabled}
                             defaultValue={this.state.tokenSymbol} onChange={(e) => this.handleParamChange(e, 'tokenSymbol')} />
                         <div id="tokenSymbolHelp" className="form-text">Choose a symbol for your new token. Preferably less than 5 characters long. E.g. "UOW".</div>
                     </div>
@@ -123,35 +125,6 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
         return (<></>);
     }
 
-    async deployContract(result: any)
-    {
-        console.log('contract will deploy...', result);
-
-        let web3 = new Web3(Web3.givenProvider);
-        const accounts = await web3.eth.getAccounts();
-
-        console.log(accounts);
-
-        let contractObject = result.output.compiled.contracts[this.state.contractType];
-        let contractBytecode = contractObject.bytecode.object;
-
-        let contract = new web3.eth.Contract(contractObject.abi);
-        console.log(contract, contractBytecode);
-
-        let deployedContract = contract.deploy({
-            data: contractBytecode,
-            arguments: []
-        });
-
-        const contractHasBeenDeployed = await deployedContract.send({
-            from: accounts[0],
-            gas: 1500000,
-            gasPrice: '30000000000'
-        });
-
-        console.log('Contract deployed at: ', contractHasBeenDeployed.options.address);
-    }
-
     render()
     {
         return (
@@ -159,6 +132,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                 <div className="mb-3">
                     <label className="form-label">Contract Type</label>
                     <select className="form-select"
+                        disabled={this.props.disabled}
                         aria-describedby="contractTypeHelp"
                         defaultValue={CreateForm.CONTRACT_TYPE_DEFAULT}
                         onChange={this.handleContractTypeChange.bind(this)}>
@@ -169,11 +143,8 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                     <div id="contractTypeHelp" className="form-text">Choose the contract type for your token.</div>
                 </div>
                 {this.renderForContractType()}
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" disabled={this.props.disabled}>
                     <span><FaCheck /> Confirm Details</span>
-                </button>
-                <button type="button" className="btn btn-danger" onClick={this.deployContract.bind(this)}>
-                    <span><FaRocket /> Deploy Contract</span>
                 </button>
             </form>
         );
