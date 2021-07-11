@@ -19,7 +19,7 @@ abstract class Contract
 
     public abstract compile(): SolidityCompilerResult;
 
-    protected compileContract(replacements: ContractReplacements): SolidityCompilerResult
+    protected compileContract(replacements?: ContractReplacements): SolidityCompilerResult
     {
         const file = this.getContractFile();
         const compiler = new SolidityCompiler();
