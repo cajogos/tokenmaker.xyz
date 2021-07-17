@@ -11,6 +11,7 @@
 - Develop complete ERC20 contract
 - Deploy smart contract ERC20 to Ethereum chain
 - Find suitable testing suite to test the frontend
+- Deploy to live on TokenMaker.xyz
 
 ### Maybes
 

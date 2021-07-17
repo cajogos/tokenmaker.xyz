@@ -28,7 +28,7 @@ abstract class Contract
         {
             fileContents = fileContents.replace(key, replacements[key]?.toString());
         }
-        console.log(fileContents);
+        console.log(fileContents); // TODO remove
         return compiler.compile(this.getContractName(), fileContents);
     }
 }

@@ -1,4 +1,14 @@
 {
+  "name": "tokenmaker.xyz",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "author": "Carlos Ferreira",
+  "license": "MIT",
   "dependencies": {
     "@openzeppelin/contracts": "^4.2.0",
     "bootstrap": "^5.0.2",
@@ -11,18 +21,6 @@
     "solc": "^0.8.6",
     "web3": "^1.4.0"
   },
-  "name": "frontend",
-  "description": "## TODOs",
-  "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/react": "^17.0.13",
     "typescript": "^4.3.5"

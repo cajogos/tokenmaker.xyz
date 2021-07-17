@@ -5,13 +5,7 @@ declare type APIError = {
 
 declare type ValidResult = {
     input: object,
-    output: {
-        compiled: {
-            contracts: {
-                [globalName: string]: CompiledContract
-            }
-        }
-    }
+    output: SolidityCompilerResult
 };
 
 declare type ExpectedResponse = {
