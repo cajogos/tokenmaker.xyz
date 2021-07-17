@@ -2,29 +2,16 @@
 
 ## TODOs
 
-### Frontend
+- Create Page:
+  - Display contract details before deployment
+  - Be able to manage the contract on the page
+  - Display contract details after deployment
+- FAQs & Tutorial Page
+  - User guide
+- Develop complete ERC20 contract
+- Deploy smart contract ERC20 to Ethereum chain
+- Find suitable testing suite to test the frontend
 
-- Wallet connect component
-- Wallet: Connect to MetaMask
-- Testing suite implemented
-- Frontend tests
-- Page: Create (started)
-- Page: Tutorial (started)
-- Page: FAQs (started)
+### Maybes
 
-### Backend
-
-- Solidity compiler
-- Able to compile solidity contracts that can be edited
-
-### Others
-
-- Testing suites
-- Deploy contract to Ethereum testnets
-
----
-
-## Folder Structure
-
-- **compiler**: Where the solidity compiler lives.
-- **frontend**: The frontend application accessible by the users.
+- Implement import statements for contract development - OpenZeppelin integration.
