@@ -15,3 +15,10 @@
 ### Maybes
 
 - Implement import statements for contract development - OpenZeppelin integration.
+
+## Report Notes
+
+- Developed the sprints:
+  1. Create a connection to Metamask wallet. (wallet connect)
+  2. Created Solidity contracts and deployed them to the Ethereum blockchain. (token-deploy-test)
+  3. Implemented a solidity compiler in JavaScript. (solidity-compiler)
