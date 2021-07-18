@@ -84,12 +84,12 @@ class CreatePageController extends BaseController
         }
     }
 
-    public deployContract(): void
+    public async deployContract(): Promise<void>
     {
         if (this.contractCompiled)
         {
-            // deploy the contract
-            // ContractDeployer.deploy(output.compiled.contracts[this.state.contractType])
+            const result = await ContractDeployer.deploy(this.contract.compiled.contracts[this.contract.contractType]);
+            console.log(result);
             this.fireContractDeployedEvent();
             this.contractDeployed = true;
         }

@@ -17,13 +17,15 @@ class ContractDeployer
 
         // TODO: Use gas estimates from compiledContract
         console.log('gas estimates', compiledContract.gasEstimates);
+        const gasEstimates = compiledContract.gasEstimates;
         const contractDeployed = await contractToDeploy.send({
             from: accounts[0],
-            gas: 1500000,
-            gasPrice: '30000000000'
+            gas: Math.floor(gasEstimates.creation.totalCost * 1.25),
+            gasPrice: web3.utils.toWei('30', 'gwei')
         });
 
         console.log('Contracted deployed at: ', contractDeployed.options.address);
+        return contractDeployed;
     }
 }
 
