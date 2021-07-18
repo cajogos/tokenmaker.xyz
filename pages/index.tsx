@@ -4,7 +4,7 @@ const HomePage = () =>
 {
     return (
         <div className="text-center p-4">
-            <h1>Tokenmaker.xyz</h1>
+            <h1>TokenMaker.xyz</h1>
             <p>Create your own token within minutes!</p>
             <div className="my-2 border-bottom border-gray p-2">
                 <Link href="/create">
