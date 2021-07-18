@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { StatusCodes, ReasonPhrases } from 'http-status-codes';
-import Contract from '../../../classes/Contract';
-import ERC20Basic from '../../../classes/contract/ERC20Basic';
-import Counter from '../../../classes/contract/Counter';
+import ERC20Basic from '../../../classes/contracts/ERC20Basic';
+import Counter from '../../../classes/contracts/Counter';
 import { SolidityCompilerResult } from '../../../classes/SolidityCompiler';
 
 const ERROR_NO_CONTRACT_TYPE = 601;

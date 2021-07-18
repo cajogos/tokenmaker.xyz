@@ -1,5 +1,5 @@
 import React, { BaseSyntheticEvent } from 'react';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaSpinner } from 'react-icons/fa';
 import CreatePageController from '../../controllers/CreatePageController';
 import ICreatePageListener from '../../interfaces/ICreatePageListener';
 
@@ -7,11 +7,12 @@ type CreateFormProps = {
     pageManager: CreatePageController
 };
 type CreateFormState = {
-    disabled: boolean,
-    contractType: string,
+    disabled: boolean;
+    contractType: string;
     params: {
         [key: string]: any
-    }
+    };
+    isCompiling: boolean;
 };
 
 class CreateForm extends React.Component<CreateFormProps, CreateFormState>
@@ -31,7 +32,8 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
         this.state = {
             disabled: false,
             contractType: CreateForm.CONTRACT_TYPE_DEFAULT,
-            params: {}
+            params: {},
+            isCompiling: false
         };
 
         this.props.pageManager.addListener(this);
@@ -39,12 +41,17 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
 
     public onContractChanged(): void
     {
-        console.log('contract changed CreateForm');
+        this.setState({
+            contractType: this.props.pageManager.getContract().contractType
+        });
     }
 
     public onContractCompiled(): void
     {
-        console.log('contract compiled CreateForm');
+        this.setState({
+            isCompiling: false,
+            disabled: false
+        });
     }
 
     public onContractDeployed(): void
@@ -55,12 +62,16 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
     async onFormSubmission(e: React.FormEvent<HTMLFormElement>)
     {
         e.preventDefault();
-        // Disable form (in compiling mode)
+
+        this.setState({
+            disabled: true,
+            isCompiling: true
+        });
+
         await this.props.pageManager.compileContract({
             contractType: this.state.contractType,
             arguments: this.state.params
         });
-        // Enable form again
     }
 
     handleContractTypeChange(event: BaseSyntheticEvent)
@@ -68,6 +79,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
         this.setState({
             contractType: event.target.value
         });
+        this.props.pageManager.setContractType(this.state.contractType);
     }
 
     handleParamChange(event: BaseSyntheticEvent, param: string)
@@ -133,6 +145,9 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                 <button type="submit" className="btn btn-primary" disabled={this.state.disabled}>
                     <span><FaCheck /> Confirm Details</span>
                 </button>
+                {this.state.isCompiling &&
+                    <span className="fst-italic small ms-3"><FaSpinner className="icon-spin me-1" /> Compiling...</span>
+                }
             </form>
         );
     }

@@ -1,7 +1,7 @@
-import Contract from '../Contract';
+import BaseContract from './BaseContract';
 import { SolidityCompilerResult } from '../SolidityCompiler';
 
-class Counter extends Contract
+class Counter extends BaseContract
 {
     public getContractName(): string
     {

@@ -1,12 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import SolidityCompiler, { SolidityCompilerResult } from './SolidityCompiler';
+import SolidityCompiler, { SolidityCompilerResult } from '../SolidityCompiler';
 
 export type ContractReplacements = {
     [globalName: string]: string | number
 };
 
-abstract class Contract
+abstract class BaseContract
 {
     protected getContractFile(): Buffer
     {
@@ -33,4 +33,4 @@ abstract class Contract
     }
 }
 
-export default Contract;
+export default BaseContract;

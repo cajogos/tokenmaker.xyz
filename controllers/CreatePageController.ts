@@ -35,6 +35,12 @@ class CreatePageController extends BaseController
         deployedAddress: null
     };
 
+    public setContractType(contractType: string): void
+    {
+        this.contract.contractType = contractType;
+        this.fireContractChangedEvent();
+    }
+
     public getContract(): ControllerContract
     {
         return this.contract;

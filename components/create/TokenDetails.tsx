@@ -2,14 +2,16 @@ import React from 'react';
 import { FaInfoCircle, FaRocket, FaExclamationTriangle, FaStar, FaCheckCircle, FaPlusCircle } from 'react-icons/fa';
 import CreatePageController from '../../controllers/CreatePageController';
 import ICreatePageListener from '../../interfaces/ICreatePageListener';
+import TokenDetailsStyles from '../../styles/TokenDetails.module.scss';
 
 type TokenDetailsProps = {
     pageManager: CreatePageController
 };
 type TokenDetailsState = {
-    contractStatus: 'Not Deployed' | 'Ready to Deploy' | 'Deployed';
-    readyToDeploy: boolean;
+    contractStatus: 'Not Compiled' | 'Ready to Deploy' | 'Deployed';
+    compiled: boolean;
     deployed: boolean;
+    detailsHTML: JSX.Element;
 };
 
 class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
@@ -19,9 +21,10 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
     {
         super(props);
         this.state = {
-            contractStatus: 'Not Deployed',
-            readyToDeploy: false,
-            deployed: false
+            contractStatus: 'Not Compiled',
+            compiled: false,
+            deployed: false,
+            detailsHTML: <></>
         };
 
         this.props.pageManager.addListener(this);
@@ -29,22 +32,52 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
 
     public onContractCompiled(): void
     {
-        console.log('contract compiled TokenDetails');
-
         this.setState({
             contractStatus: 'Ready to Deploy',
-            readyToDeploy: true,
+            compiled: true,
             deployed: false
         });
+
+        // TODO: Contract Arguments missing from compilation
+
+        const compiled = this.props.pageManager.getContract().compiled;
+        this.setState({
+            detailsHTML:
+                <>
+                    {Object.entries(compiled.contracts).map(([contract, contractData]) =>
+                    {
+                        return (
+                            <div key={contract} className="border-bottom border-gray">
+                                <h5>{contract}</h5>
+                                <div className={TokenDetailsStyles.tokenDetail}>
+                                    <strong>Arguments</strong>
+                                </div>
+                                <div className={TokenDetailsStyles.tokenDetail}>
+                                    <strong>ABI:</strong>
+                                    <pre>{JSON.stringify(contractData.abi, null, 2)}</pre>
+                                </div>
+                                <div className={TokenDetailsStyles.tokenDetail}>
+                                    <strong>Bytecode:</strong>
+                                    <pre>{JSON.stringify(contractData.bytecode.object, null, 2)}</pre>
+                                </div>
+                                <div className={TokenDetailsStyles.tokenDetail}>
+                                    <strong>Gas Estimates</strong>
+                                    <pre>{JSON.stringify(contractData.gasEstimates.creation, null, 2)}</pre>
+                                </div>
+                                {console.log(contractData)}
+                            </div>
+                        );
+                    })}
+                </>
+        });
+        console.log(compiled);
     }
 
     public onContractDeployed(): void
     {
-        console.log('contract deployed TokenDetails');
-
         this.setState({
             contractStatus: 'Deployed',
-            readyToDeploy: false,
+            compiled: false,
             deployed: true
         });
     }
@@ -60,11 +93,18 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
             <>
                 <div className="card">
                     <div className="card-header">
-                        <span className="small"><FaInfoCircle /> Information message goes here...</span>
+                        <span className="small"><FaInfoCircle /> Confirm the token details below before deployment.</span>
                     </div>
                     <div className="card-body">
                         <h5 className="card-title">Token Details</h5>
-                        <p className="card-text">...</p>
+                        {this.state.compiled ?
+                            <div>{this.state.detailsHTML}</div>
+                            :
+                            <div className="alert alert-danger">
+                                <span>The token has not been compiled yet, please confirm its details.</span>
+                            </div>
+                        }
+
                     </div>
                     <div className="card-footer">
                         <div className="row">
@@ -74,7 +114,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                             <div className="col text-end">
                                 <button className="btn btn-sm btn-primary"
                                     onClick={(e) => this.props.pageManager.deployContract()}
-                                    disabled={!this.state.readyToDeploy}>
+                                    disabled={!this.state.compiled}>
                                     <span><FaRocket /> Deploy Your Contract!</span>
                                 </button>
                             </div>

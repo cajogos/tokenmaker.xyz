@@ -1,7 +1,7 @@
-import Contract, { ContractReplacements } from '../Contract';
+import BaseContract, { ContractReplacements } from './BaseContract';
 import { SolidityCompilerResult } from '../SolidityCompiler';
 
-class ERC20Basic extends Contract
+class ERC20Basic extends BaseContract
 {
     private tokenName: string = '';
     private tokenSymbol: string = '';

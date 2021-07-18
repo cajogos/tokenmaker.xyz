@@ -1,0 +1,21 @@
+.tokenDetail {
+
+    border: 1px solid #ccc;
+    padding: 12px;
+    border-radius: 4px;
+    box-shadow: 1px 1px 5px #ccc;
+
+    strong {
+        display: block;
+    }
+
+    pre {
+        font-family: monospace;
+        font-size: 0.8em;
+        max-height: 100px;
+        overflow-y: scroll;
+        white-space: normal;
+        color: blueviolet;
+        margin: 0;
+    }
+}
