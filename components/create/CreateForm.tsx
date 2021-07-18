@@ -41,9 +41,6 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
 
     public onContractChanged(): void
     {
-        this.setState({
-            contractType: this.props.pageManager.getContract().contractType
-        });
     }
 
     public onContractCompiled(): void

@@ -44,11 +44,18 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
         console.log(compiled);
 
         this.setState({
-            detailsHTML:
-                <>
-                    {Object.entries(compiled.contracts).map(([contract, contractData]) =>
-                    {
-                        return (
+            detailsHTML: this.getDetailsHTML(compiled.contracts)
+        });
+    }
+
+    private getDetailsHTML(contracts: any): JSX.Element
+    {
+        return (
+            <>
+                {Object.entries(contracts).map(([contract, contractData]: any) =>
+                {
+                    return (
+                        <>
                             <div key={contract} className="border-bottom border-gray">
                                 <h5>{contract}</h5>
                                 <div className={TokenDetailsStyles.tokenDetail}>
@@ -67,10 +74,12 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                                     <pre>{JSON.stringify(contractData.gasEstimates.creation, null, 2)}</pre>
                                 </div>
                             </div>
-                        );
-                    })}
-                </>
-        });
+                            <hr />
+                        </>
+                    );
+                })}
+            </>
+        );
     }
 
     public onContractDeployed(): void
@@ -82,10 +91,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
         });
     }
 
-    public onContractChanged(): void
-    {
-        console.log('contract changed TokenDetails');
-    }
+    public onContractChanged(): void { }
 
     render()
     {
