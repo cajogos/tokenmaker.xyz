@@ -17,7 +17,7 @@ type ControllerContract = {
             [key: string]: CompiledContract;
         }
     };
-    deployed: any;
+    deployedAddress: string | null;
 };
 
 class CreatePageController extends BaseController
@@ -32,7 +32,7 @@ class CreatePageController extends BaseController
         compiled: {
             contracts: {}
         },
-        deployed: null
+        deployedAddress: null
     };
 
     public getContract(): ControllerContract
@@ -88,8 +88,8 @@ class CreatePageController extends BaseController
     {
         if (this.contractCompiled)
         {
-            const result = await ContractDeployer.deploy(this.contract.compiled.contracts[this.contract.contractType]);
-            console.log(result);
+            this.contract.deployedAddress = await ContractDeployer
+                .deploy(this.contract.compiled.contracts[this.contract.contractType]);
             this.fireContractDeployedEvent();
             this.contractDeployed = true;
         }

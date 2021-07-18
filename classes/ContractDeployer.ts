@@ -2,11 +2,10 @@ import Web3 from 'web3';
 
 class ContractDeployer
 {
-    public static async deploy(compiledContract: CompiledContract, args: any = [])
+    public static async deploy(compiledContract: CompiledContract, args: any = []): Promise<string>
     {
         const web3 = new Web3(Web3.givenProvider);
         const accounts = await web3.eth.getAccounts();
-        console.log('accounts', accounts);
 
         let contract = new web3.eth.Contract(compiledContract.abi);
 
@@ -15,17 +14,16 @@ class ContractDeployer
             arguments: args
         });
 
-        // TODO: Use gas estimates from compiledContract
-        console.log('gas estimates', compiledContract.gasEstimates);
-        const gasEstimates = compiledContract.gasEstimates;
+        // Calculate the cost of the gas using the contract estimate and an abitrary factor
+        const gasEstimates = Math.floor(compiledContract.gasEstimates.creation.totalCost * 12.5);
+
         const contractDeployed = await contractToDeploy.send({
             from: accounts[0],
-            gas: Math.floor(gasEstimates.creation.totalCost * 1.25),
+            gas: gasEstimates,
             gasPrice: web3.utils.toWei('30', 'gwei')
         });
 
-        console.log('Contracted deployed at: ', contractDeployed.options.address);
-        return contractDeployed;
+        return contractDeployed.options.address;
     }
 }
 
