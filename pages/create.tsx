@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaExclamationTriangle } from 'react-icons/fa';
+import { FaExclamationTriangle, FaInfoCircle } from 'react-icons/fa';
 import MetaMaskConnector from '../classes/MetaMaskConnector';
 import CreateForm from '../components/create/CreateForm';
 import CreateTokenDetails from '../components/create/TokenDetails';
@@ -10,6 +10,7 @@ type CreatePageProps = {};
 type CreatePageState = {
     walletInstalled: boolean;
     pageDisabled: boolean;
+    lastEvent: 'None' | 'Contract Changed' | 'Contract Compiled' | 'Contract Deployed'
 };
 
 class CreatePage extends React.Component<CreatePageProps, CreatePageState>
@@ -22,26 +23,33 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
         super(props);
         this.state = {
             walletInstalled: false,
-            pageDisabled: true
+            pageDisabled: true,
+            lastEvent: 'None'
         };
 
         this.manager = new CreatePageController();
         this.manager.addListener(this);
     }
 
+    public onContractChanged(): void
+    {
+        this.setState({
+            lastEvent: 'Contract Changed'
+        });
+    }
+
     public onContractCompiled(): void
     {
-        console.log('contract compiled CreatePage');
+        this.setState({
+            lastEvent: 'Contract Compiled'
+        });
     }
 
     public onContractDeployed(): void
     {
-        console.log('contract deployed CreatePage');
-    }
-
-    public onContractChanged(): void
-    {
-        console.log('contract changed CreatePage');
+        this.setState({
+            lastEvent: 'Contract Deployed'
+        });
     }
 
     componentDidMount()
@@ -63,14 +71,19 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
             <>
                 <h2>Create your Token</h2>
                 {this.state.walletInstalled && !this.state.pageDisabled ?
-                    <div className="row">
-                        <div className="col-md-6">
-                            <CreateForm pageManager={this.manager} />
+                    <>
+                        <p className="alert alert-secondary small">
+                            <span><FaInfoCircle /> <strong>Last Event:</strong> {this.state.lastEvent}</span>
+                        </p>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <CreateForm pageManager={this.manager} />
+                            </div>
+                            <div className="col-md-6 mt-3">
+                                <CreateTokenDetails pageManager={this.manager} />
+                            </div>
                         </div>
-                        <div className="col-md-6 mt-3">
-                            <CreateTokenDetails pageManager={this.manager} />
-                        </div>
-                    </div>
+                    </>
                     :
                     <div className="alert alert-warning">
                         <span><FaExclamationTriangle /> Please install MetaMask!</span>

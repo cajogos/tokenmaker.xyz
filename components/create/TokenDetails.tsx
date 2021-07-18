@@ -41,6 +41,8 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
         // TODO: Contract Arguments missing from compilation
 
         const compiled = this.props.pageManager.getContract().compiled;
+        console.log(compiled);
+
         this.setState({
             detailsHTML:
                 <>
@@ -64,13 +66,11 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                                     <strong>Gas Estimates</strong>
                                     <pre>{JSON.stringify(contractData.gasEstimates.creation, null, 2)}</pre>
                                 </div>
-                                {console.log(contractData)}
                             </div>
                         );
                     })}
                 </>
         });
-        console.log(compiled);
     }
 
     public onContractDeployed(): void
