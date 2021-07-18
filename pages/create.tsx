@@ -1,25 +1,21 @@
 import React from 'react';
 import { FaExclamationTriangle } from 'react-icons/fa';
 import MetaMaskConnector from '../classes/MetaMaskConnector';
-import CreateForm from '../components/CreateForm';
-import CreateTokenDetails from '../components/CreateTokenDetails';
+import CreateForm from '../components/create/CreateForm';
+import CreateTokenDetails from '../components/create/TokenDetails';
+import CreatePageController from '../controllers/CreatePageController';
+import ICreatePageListener from '../interfaces/ICreatePageListener';
 
 type CreatePageProps = {};
 type CreatePageState = {
-    walletInstalled: boolean,
-    pageDisabled: boolean
+    walletInstalled: boolean;
+    pageDisabled: boolean;
 };
 
 class CreatePage extends React.Component<CreatePageProps, CreatePageState>
+    implements ICreatePageListener
 {
-    /**
-     * Contract deploying steps:
-     * - Connect the wallet (external)
-     * - Select the contract type
-     * - Fill the required params
-     * - Compile the contract
-     * - Deploy the contract
-     */
+    private manager: CreatePageController;
 
     constructor(props: CreatePageProps)
     {
@@ -28,6 +24,24 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
             walletInstalled: false,
             pageDisabled: true
         };
+
+        this.manager = new CreatePageController();
+        this.manager.addListener(this);
+    }
+
+    public onContractCompiled(): void
+    {
+        console.log('contract compiled CreatePage');
+    }
+
+    public onContractDeployed(): void
+    {
+        console.log('contract deployed CreatePage');
+    }
+
+    public onContractChanged(): void
+    {
+        console.log('contract changed CreatePage');
     }
 
     componentDidMount()
@@ -47,15 +61,14 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
     {
         return (
             <>
-                <h1>Create your Token</h1>
-                <button className="btn btn-secondary" onClick={(e) => this.setState({ pageDisabled: !this.state.pageDisabled })}>Test Disable/Enable</button>
-                {this.state.walletInstalled ?
+                <h2>Create your Token</h2>
+                {this.state.walletInstalled && !this.state.pageDisabled ?
                     <div className="row">
-                        <div className="col">
-                            <CreateForm disabled={this.state.pageDisabled} />
+                        <div className="col-md-6">
+                            <CreateForm pageManager={this.manager} />
                         </div>
-                        <div className="col">
-                            <CreateTokenDetails disabled={this.state.pageDisabled} />
+                        <div className="col-md-6 mt-3">
+                            <CreateTokenDetails pageManager={this.manager} />
                         </div>
                     </div>
                     :

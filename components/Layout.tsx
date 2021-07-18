@@ -13,11 +13,9 @@ const Layout = ({ children }: LayoutProps) =>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
             </Head>
-            <div className="site-wrapper">
-                <Header />
-                <div className="content-wrapper container">{children}</div>
-                <Footer />
-            </div>
+            <Header />
+            <div className="content-wrapper container">{children}</div>
+            <Footer />
         </>
     );
 };

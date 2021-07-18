@@ -1,27 +1,25 @@
-import { StatusCodes } from 'http-status-codes';
 import React, { BaseSyntheticEvent } from 'react';
-import { FaCheck, FaRocket } from 'react-icons/fa';
-import Web3 from 'web3';
-import ContractDeployer from '../classes/ContractDeployer';
+import { FaCheck } from 'react-icons/fa';
+import CreatePageController from '../../controllers/CreatePageController';
+import ICreatePageListener from '../../interfaces/ICreatePageListener';
 
 type CreateFormProps = {
-    disabled: boolean
+    pageManager: CreatePageController
 };
 type CreateFormState = {
+    disabled: boolean,
     contractType: string,
     params: {
-        [globalName: string]: any
-    },
-    tokenName: string,
-    tokenSymbol: string
+        [key: string]: any
+    }
 };
 
 class CreateForm extends React.Component<CreateFormProps, CreateFormState>
+    implements ICreatePageListener
 {
     // The available contract types
     static CONTRACT_TYPE_COUNTER: string = 'Counter';
     static CONTRACT_TYPE_ERC20_BASIC: string = 'ERC20Basic';
-    static CONTRACT_TYPE_ERC20_EXTENDED: string = 'ERC20Extended';
 
     // This sets the default contract state
     // static CONTRACT_TYPE_DEFAULT: string = CreateForm.CONTRACT_TYPE_ERC20_BASIC;
@@ -31,46 +29,38 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
     {
         super(props);
         this.state = {
+            disabled: false,
             contractType: CreateForm.CONTRACT_TYPE_DEFAULT,
-            params: {},
-            tokenName: '',
-            tokenSymbol: ''
+            params: {}
         };
+
+        this.props.pageManager.addListener(this);
     }
 
-    onFormSubmission(e: React.FormEvent<HTMLFormElement>)
+    public onContractChanged(): void
+    {
+        console.log('contract changed CreateForm');
+    }
+
+    public onContractCompiled(): void
+    {
+        console.log('contract compiled CreateForm');
+    }
+
+    public onContractDeployed(): void
+    {
+        console.log('contract deployed CreateForm');
+    }
+
+    async onFormSubmission(e: React.FormEvent<HTMLFormElement>)
     {
         e.preventDefault();
-
-        console.log(this.state.params);
-
-        fetch('/api/contract/compile', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contractType: this.state.contractType,
-                tokenName: this.state.tokenName,
-                tokenSymbol: this.state.tokenSymbol
-            })
-        }).then((response: Response) =>
-        {
-            if (response.status === StatusCodes.OK)
-            {
-                response.json().then((parsed: ExpectedResponse) =>
-                {
-                    if (parsed.success)
-                    {
-                        if (typeof parsed.result !== 'undefined')
-                        {
-                            const output = parsed.result.output;
-                            ContractDeployer.deploy(output.compiled.contracts[this.state.contractType])
-                        }
-                    }
-                });
-            }
-        }).catch(error => console.error(error));
+        // Disable form (in compiling mode)
+        await this.props.pageManager.compileContract({
+            contractType: this.state.contractType,
+            arguments: this.state.params
+        });
+        // Enable form again
     }
 
     handleContractTypeChange(event: BaseSyntheticEvent)
@@ -103,23 +93,21 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                 <>
                     <div className="mb-3">
                         <label className="form-label">Token Name</label>
-                        <input type="text" required className="form-control" aria-describedby="tokenNameHelp" disabled={this.props.disabled}
-                            defaultValue={this.state.tokenName} onChange={(e) => this.handleParamChange(e, 'tokenName')} />
-                        <div id="tokenNameHelp" className="form-text">Choose a suitable name for your new token. E.g. "Westminter Token".</div>
+                        <input type="text" className="form-control" aria-describedby="tokenNameHelp"
+                            disabled={this.state.disabled} required={true}
+                            defaultValue="" onChange={(e) => this.handleParamChange(e, 'tokenName')} />
+                        <div id="tokenNameHelp"
+                            className="form-text">Choose a suitable name for your new token. E.g. "Westminter Token".</div>
                     </div>
                     <div className="mb-3">
                         <label className="form-label">Token Symbol</label>
-                        <input type="text" required className="form-control" aria-describedby="tokenSymbolHelp" disabled={this.props.disabled}
-                            defaultValue={this.state.tokenSymbol} onChange={(e) => this.handleParamChange(e, 'tokenSymbol')} />
-                        <div id="tokenSymbolHelp" className="form-text">Choose a symbol for your new token. Preferably less than 5 characters long. E.g. "UOW".</div>
+                        <input type="text" className="form-control" aria-describedby="tokenSymbolHelp"
+                            disabled={this.state.disabled} required={true}
+                            defaultValue="" onChange={(e) => this.handleParamChange(e, 'tokenSymbol')} />
+                        <div id="tokenSymbolHelp"
+                            className="form-text">Choose a symbol for your new token. Preferably less than 5 characters long. E.g. "UOW".</div>
                     </div>
                 </>
-            );
-        }
-        if (this.state.contractType === CreateForm.CONTRACT_TYPE_ERC20_EXTENDED)
-        {
-            return (
-                <div className="alert alert-danger">Coming soon...</div>
             );
         }
         return (<></>);
@@ -132,18 +120,17 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                 <div className="mb-3">
                     <label className="form-label">Contract Type</label>
                     <select className="form-select"
-                        disabled={this.props.disabled}
+                        disabled={this.state.disabled}
                         aria-describedby="contractTypeHelp"
                         defaultValue={CreateForm.CONTRACT_TYPE_DEFAULT}
                         onChange={this.handleContractTypeChange.bind(this)}>
                         <option value={CreateForm.CONTRACT_TYPE_ERC20_BASIC}>ERC20 Basic</option>
-                        <option value={CreateForm.CONTRACT_TYPE_ERC20_EXTENDED}>ERC20 Extended</option>
                         <option value={CreateForm.CONTRACT_TYPE_COUNTER}>Counter (Test)</option>
                     </select>
                     <div id="contractTypeHelp" className="form-text">Choose the contract type for your token.</div>
                 </div>
                 {this.renderForContractType()}
-                <button type="submit" className="btn btn-primary" disabled={this.props.disabled}>
+                <button type="submit" className="btn btn-primary" disabled={this.state.disabled}>
                     <span><FaCheck /> Confirm Details</span>
                 </button>
             </form>
