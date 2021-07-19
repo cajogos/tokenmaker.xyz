@@ -12,6 +12,7 @@ export type ContractToCompile = {
 
 type ControllerContract = {
     contractType: string,
+    arguments: {},
     compiled: {
         contracts: {
             [key: string]: CompiledContract;
@@ -29,6 +30,7 @@ class CreatePageController extends BaseController
 
     private contract: ControllerContract = {
         contractType: '',
+        arguments: {},
         compiled: {
             contracts: {}
         },
@@ -61,6 +63,11 @@ class CreatePageController extends BaseController
         this.listeners.forEach(listener => listener.onContractCompiled());
     }
 
+    private fireContractCompiledErrorEvent(errorCode: number, errorMessage: string): void
+    {
+        this.listeners.forEach(listener => listener.onContractCompiledError(errorCode, errorMessage));
+    }
+
     private fireContractDeployedEvent(): void
     {
         this.listeners.forEach(listener => listener.onContractDeployed());
@@ -81,10 +88,17 @@ class CreatePageController extends BaseController
             if (jsonResponse.success)
             {
                 this.contract.contractType = contract.contractType;
+                this.contract.arguments = jsonResponse.result.input;
                 this.contract.compiled = jsonResponse.result.output.compiled;
 
                 this.contractCompiled = true;
                 this.fireContractCompiledEvent();
+                return jsonResponse.result;
+            }
+            if (jsonResponse.error)
+            {
+                this.contractCompiled = false;
+                this.fireContractCompiledErrorEvent(jsonResponse.error.errorCode, jsonResponse.error.errorMessage);
                 return jsonResponse.result;
             }
         }

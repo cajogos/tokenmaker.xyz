@@ -1,5 +1,5 @@
 import React, { BaseSyntheticEvent } from 'react';
-import { FaCheck, FaSpinner } from 'react-icons/fa';
+import { FaCheck, FaExclamationTriangle, FaSpinner } from 'react-icons/fa';
 import CreatePageController from '../../controllers/CreatePageController';
 import ICreatePageListener from '../../interfaces/ICreatePageListener';
 
@@ -13,6 +13,9 @@ type CreateFormState = {
         [key: string]: any
     };
     isCompiling: boolean;
+    hasError: boolean;
+    errorCode: number;
+    errorMessage: string;
 };
 
 class CreateForm extends React.Component<CreateFormProps, CreateFormState>
@@ -33,28 +36,38 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
             disabled: false,
             contractType: CreateForm.CONTRACT_TYPE_DEFAULT,
             params: {},
-            isCompiling: false
+            isCompiling: false,
+            hasError: false,
+            errorCode: 0,
+            errorMessage: ''
         };
 
         this.props.pageManager.addListener(this);
     }
 
-    public onContractChanged(): void
+    public onContractCompiledError(errorCode: number, errorMessage: string): void
     {
+        this.setState({
+            isCompiling: false,
+            disabled: false,
+            hasError: true,
+            errorCode: errorCode,
+            errorMessage: errorMessage
+        });
     }
+
+    public onContractChanged(): void { }
 
     public onContractCompiled(): void
     {
         this.setState({
             isCompiling: false,
-            disabled: false
+            disabled: false,
+            hasError: false
         });
     }
 
-    public onContractDeployed(): void
-    {
-        console.log('contract deployed CreateForm');
-    }
+    public onContractDeployed(): void { }
 
     async onFormSubmission(e: React.FormEvent<HTMLFormElement>)
     {
@@ -154,6 +167,11 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                     </select>
                     <div id="contractTypeHelp" className="form-text">Choose the contract type for your token.</div>
                 </div>
+                {this.state.hasError &&
+                    <div className="alert alert-danger">
+                        <FaExclamationTriangle className="me-2" /><strong>Error {this.state.errorCode}: </strong><span>{this.state.errorMessage}</span>
+                    </div>
+                }
                 {this.renderForContractType()}
                 <button type="submit" className="btn btn-primary" disabled={this.state.disabled}>
                     <span><FaCheck /> Confirm Details</span>

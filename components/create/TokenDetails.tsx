@@ -41,26 +41,28 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
         // TODO: Contract Arguments missing from compilation
 
         const compiled = this.props.pageManager.getContract().compiled;
-        console.log(compiled);
+        const args = this.props.pageManager.getContract().arguments;
 
         this.setState({
-            detailsHTML: this.getDetailsHTML(compiled.contracts)
+            detailsHTML: this.getDetailsHTML(compiled.contracts, args)
         });
     }
 
-    private getDetailsHTML(contracts: any): JSX.Element
+    public onContractCompiledError(errorCode: number, errorMessage: string): void { }
+
+    private getDetailsHTML(contracts: any, args: any): JSX.Element
     {
         return (
             <>
+                <div className={TokenDetailsStyles.TokenDetails}>
+                    <strong>Arguments</strong>
+                </div>
                 {Object.entries(contracts).map(([contract, contractData]: any) =>
                 {
                     return (
                         <>
                             <div key={contract} className="border-bottom border-gray">
                                 <h5>{contract}</h5>
-                                <div className={TokenDetailsStyles.tokenDetail}>
-                                    <strong>Arguments</strong>
-                                </div>
                                 <div className={TokenDetailsStyles.tokenDetail}>
                                     <strong>ABI:</strong>
                                     <pre>{JSON.stringify(contractData.abi, null, 2)}</pre>

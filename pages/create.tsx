@@ -10,7 +10,7 @@ type CreatePageProps = {};
 type CreatePageState = {
     walletInstalled: boolean;
     pageDisabled: boolean;
-    lastEvent: 'None' | 'Contract Changed' | 'Contract Compiled' | 'Contract Deployed'
+    lastEvent: 'None' | 'Contract Changed' | 'Contract Compiled' | 'Contract Compilation Error' | 'Contract Deployed'
 };
 
 class CreatePage extends React.Component<CreatePageProps, CreatePageState>
@@ -42,6 +42,13 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
     {
         this.setState({
             lastEvent: 'Contract Compiled'
+        });
+    }
+
+    public onContractCompiledError(errorCode: number, errorMessage: string): void
+    {
+        this.setState({
+            lastEvent: 'Contract Compilation Error'
         });
     }
 
