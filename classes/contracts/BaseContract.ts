@@ -44,7 +44,6 @@ abstract class BaseContract
         {
             fileContents = fileContents.replace(key, this.replacements[key]?.toString());
         }
-        console.log(fileContents);
         return compiler.compile(this.getContractName(), fileContents);
     }
 }
