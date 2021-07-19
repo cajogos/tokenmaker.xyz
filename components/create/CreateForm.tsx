@@ -20,11 +20,11 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
 {
     // The available contract types
     static CONTRACT_TYPE_COUNTER: string = 'Counter';
-    static CONTRACT_TYPE_ERC20_BASIC: string = 'ERC20Basic';
+    static CONTRACT_TYPE_ERC20: string = 'ERC20';
 
     // This sets the default contract state
-    // static CONTRACT_TYPE_DEFAULT: string = CreateForm.CONTRACT_TYPE_ERC20_BASIC;
-    static CONTRACT_TYPE_DEFAULT: string = CreateForm.CONTRACT_TYPE_COUNTER;
+    static CONTRACT_TYPE_DEFAULT: string = CreateForm.CONTRACT_TYPE_ERC20;
+    // static CONTRACT_TYPE_DEFAULT: string = CreateForm.CONTRACT_TYPE_COUNTER;
 
     constructor(props: CreateFormProps)
     {
@@ -74,13 +74,15 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
     handleContractTypeChange(event: BaseSyntheticEvent)
     {
         this.setState({
-            contractType: event.target.value
+            contractType: event.target.value,
+            params: {}
         });
         this.props.pageManager.setContractType(this.state.contractType);
     }
 
     handleParamChange(event: BaseSyntheticEvent, param: string)
     {
+        console.log(param, event.target.value);
         let currentParams = this.state.params;
         currentParams[param] = event.target.value.trim();
         this.setState({
@@ -96,25 +98,39 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                 <div className="alert alert-info">No params required.</div>
             );
         }
-        if (this.state.contractType === CreateForm.CONTRACT_TYPE_ERC20_BASIC)
+        if (this.state.contractType === CreateForm.CONTRACT_TYPE_ERC20)
         {
             return (
                 <>
                     <div className="mb-3">
                         <label className="form-label">Token Name</label>
-                        <input type="text" className="form-control" aria-describedby="tokenNameHelp"
+                        <input type="text" className="form-control" id="inputTokenName"
                             disabled={this.state.disabled} required={true}
-                            defaultValue="" onChange={(e) => this.handleParamChange(e, 'tokenName')} />
-                        <div id="tokenNameHelp"
-                            className="form-text">Choose a suitable name for your new token. E.g. "Westminter Token".</div>
+                            onChange={(e) => this.handleParamChange(e, 'tokenName')}
+                            aria-describedby="tokenNameHelp" />
+                        <div id="tokenNameHelp" className="form-text">
+                            <span>Choose a suitable name for your new token. E.g. "Westminter Token".</span>
+                        </div>
                     </div>
                     <div className="mb-3">
                         <label className="form-label">Token Symbol</label>
-                        <input type="text" className="form-control" aria-describedby="tokenSymbolHelp"
+                        <input type="text" className="form-control" id="inputTokenSymbol"
                             disabled={this.state.disabled} required={true}
-                            defaultValue="" onChange={(e) => this.handleParamChange(e, 'tokenSymbol')} />
-                        <div id="tokenSymbolHelp"
-                            className="form-text">Choose a symbol for your new token. Preferably less than 5 characters long. E.g. "UOW".</div>
+                            onChange={(e) => this.handleParamChange(e, 'tokenSymbol')}
+                            aria-describedby="tokenSymbolHelp" />
+                        <div id="tokenSymbolHelp" className="form-text">
+                            <span>Choose a symbol for your new token. Preferably less than 5 characters long. E.g. "UOW".</span>
+                        </div>
+                    </div>
+                    <div className="mb-3">
+                        <label className="form-label">Initial Supply</label>
+                        <input type="text" className="form-control" id="inputInitialSupply"
+                            disabled={this.state.disabled} required={true}
+                            onChange={(e) => this.handleParamChange(e, 'initialSupply')}
+                            aria-describedby="initialSupplyHelp" />
+                        <div id="initialSupplyHelp" className="form-text">
+                            <span>Choose the initial token supply. This will be sent to your wallet address on creation.</span>
+                        </div>
                     </div>
                 </>
             );
@@ -133,7 +149,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                         aria-describedby="contractTypeHelp"
                         defaultValue={CreateForm.CONTRACT_TYPE_DEFAULT}
                         onChange={this.handleContractTypeChange.bind(this)}>
-                        <option value={CreateForm.CONTRACT_TYPE_ERC20_BASIC}>ERC20 Basic</option>
+                        <option value={CreateForm.CONTRACT_TYPE_ERC20}>ERC20 Basic</option>
                         <option value={CreateForm.CONTRACT_TYPE_COUNTER}>Counter (Test)</option>
                     </select>
                     <div id="contractTypeHelp" className="form-text">Choose the contract type for your token.</div>
