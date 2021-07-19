@@ -98,7 +98,11 @@ const HandleContractERC20 = (res: NextApiResponse<ExpectedResponse>, args: ERC20
     let compiled: SolidityCompilerResult = contract.compile();
     return res.json({
         success: true, result: {
-            input: args,
+            input: {
+                tokenName: tokenName,
+                tokenSymbol: tokenSymbol,
+                initialSupply: initialSupplyNumber
+            },
             output: {
                 compiled
             }

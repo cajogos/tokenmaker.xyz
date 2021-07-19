@@ -12,7 +12,7 @@ export type ContractToCompile = {
 
 type ControllerContract = {
     contractType: string,
-    arguments: {},
+    arguments: any,
     compiled: {
         contracts: {
             [key: string]: CompiledContract;
@@ -108,8 +108,14 @@ class CreatePageController extends BaseController
     {
         if (this.contractCompiled)
         {
+            let args: any = [];
+            if (this.contract.contractType === 'ERC20')
+            {
+                args.push(this.contract.arguments.tokenName);
+                args.push(this.contract.arguments.tokenSymbol);
+            }
             this.contract.deployedAddress = await ContractDeployer
-                .deploy(this.contract.compiled.contracts[this.contract.contractType]);
+                .deploy(this.contract.compiled.contracts[this.contract.contractType], args);
             this.fireContractDeployedEvent();
             this.contractDeployed = true;
         }

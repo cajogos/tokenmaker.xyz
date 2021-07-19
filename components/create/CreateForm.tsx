@@ -95,7 +95,6 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
 
     handleParamChange(event: BaseSyntheticEvent, param: string)
     {
-        console.log(param, event.target.value);
         let currentParams = this.state.params;
         currentParams[param] = event.target.value.trim();
         this.setState({

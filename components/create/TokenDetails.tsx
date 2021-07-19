@@ -38,8 +38,6 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
             deployed: false
         });
 
-        // TODO: Contract Arguments missing from compilation
-
         const compiled = this.props.pageManager.getContract().compiled;
         const args = this.props.pageManager.getContract().arguments;
 
@@ -54,30 +52,29 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
     {
         return (
             <>
-                <div className={TokenDetailsStyles.TokenDetails}>
+                <div className={TokenDetailsStyles.tokenDetail + ' mb-3'}>
                     <strong>Arguments</strong>
+                    <pre>{JSON.stringify(args, null, 2)}</pre>
                 </div>
                 {Object.entries(contracts).map(([contract, contractData]: any) =>
                 {
                     return (
-                        <>
-                            <div key={contract} className="border-bottom border-gray">
-                                <h5>{contract}</h5>
-                                <div className={TokenDetailsStyles.tokenDetail}>
-                                    <strong>ABI:</strong>
-                                    <pre>{JSON.stringify(contractData.abi, null, 2)}</pre>
-                                </div>
-                                <div className={TokenDetailsStyles.tokenDetail}>
-                                    <strong>Bytecode:</strong>
-                                    <pre>{JSON.stringify(contractData.bytecode.object, null, 2)}</pre>
-                                </div>
-                                <div className={TokenDetailsStyles.tokenDetail}>
-                                    <strong>Gas Estimates</strong>
-                                    <pre>{JSON.stringify(contractData.gasEstimates.creation, null, 2)}</pre>
-                                </div>
+                        <div key={contract.toLowerCase()}>
+                            <h5>{contract}</h5>
+                            <div className={TokenDetailsStyles.tokenDetail}>
+                                <strong>ABI:</strong>
+                                <pre>{JSON.stringify(contractData.abi, null, 2)}</pre>
+                            </div>
+                            <div className={TokenDetailsStyles.tokenDetail}>
+                                <strong>Bytecode:</strong>
+                                <pre>{JSON.stringify(contractData.bytecode.object, null, 2)}</pre>
+                            </div>
+                            <div className={TokenDetailsStyles.tokenDetail}>
+                                <strong>Gas Estimates</strong>
+                                <pre>{JSON.stringify(contractData.gasEstimates.creation, null, 2)}</pre>
                             </div>
                             <hr />
-                        </>
+                        </div>
                     );
                 })}
             </>
