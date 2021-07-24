@@ -1,5 +1,4 @@
 import IMetaMaskListener from '../interfaces/IMetaMaskListener';
-import Web3 from 'web3';
 
 class MetaMaskConnector
 {
@@ -23,8 +22,6 @@ class MetaMaskConnector
     private currentNetwork: number | null = null; // The currently connected chain ID
     private currentAccount: string | null = null; // The currently selected account address
 
-    private web3: Web3 | null = null; // Web3 provider
-
     // Listeners of the wallet
     private listeners: IMetaMaskListener[] = [];
     public static addListener(listener: IMetaMaskListener): void
@@ -39,7 +36,6 @@ class MetaMaskConnector
         if (this.state !== MetaMaskConnector.STATE_NOT_INSTALLED)
         {
             this.attachEvents();
-            this.initWeb3();
         }
     }
 
@@ -50,7 +46,7 @@ class MetaMaskConnector
         {
             this.state = MetaMaskConnector.STATE_NOT_CONNECTED;
 
-            this.currentNetwork = parseInt(ethereum.networkVersion);
+            this.loadChainID();
             this.currentAccount = ethereum.selectedAddress;
 
             if (ethereum.isConnected() && this.currentAccount !== null)
@@ -58,6 +54,16 @@ class MetaMaskConnector
                 this.state = MetaMaskConnector.STATE_CONNECTED;
             }
         }
+    }
+
+    private loadChainID()
+    {
+        ethereum.request({ method: 'eth_chainId' })
+            .then((chainID: string) =>
+            {
+                this.handleNetworkChanged(parseInt(chainID, 16));
+            })
+            .catch(error => console.error(error));
     }
 
     public static getState(): number
@@ -95,28 +101,21 @@ class MetaMaskConnector
             });
             ethereum.on('chainChanged', (chainID: string): void =>
             {
-                this.handleNetworkChanged(parseInt(chainID));
+                this.handleNetworkChanged(parseInt(chainID, 16));
             });
             ethereum.on('message', (message: ProviderMessage): void =>
             {
-                console.log('received message', message);
+                console.log(message);
             });
             ethereum.on('connect', (connectInfo: ConnectInfo) =>
             {
-                console.log('ethereum connect event', connectInfo);
+                console.log(connectInfo);
             });
             ethereum.on('disconnect', (error: ProviderRpcError) =>
             {
-                console.log('ethereum disconnect event', error);
+                console.log(error);
             });
         }
-    }
-
-    private initWeb3()
-    {
-        this.web3 = new Web3(Web3.givenProvider);
-        // https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html#deploy
-        // https://web3js.readthedocs.io/en/v1.2.11/web3-eth-contract.html#contract-send
     }
 
     public async requestAccounts(): Promise<boolean>
@@ -175,6 +174,7 @@ class MetaMaskConnector
 
     public static getNetworkName(chainID: number | null): string
     {
+        console.log('chain name', chainID);
         switch (chainID)
         {
             case 1:
@@ -187,6 +187,8 @@ class MetaMaskConnector
                 return 'Goerli Testnet';
             case 42:
                 return 'Kovan Testnet';
+            case 1337:
+                return 'Local Testnet';
         }
         return 'Unknown';
     }

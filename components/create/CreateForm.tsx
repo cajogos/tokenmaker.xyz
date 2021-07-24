@@ -4,7 +4,8 @@ import CreatePageController from '../../controllers/CreatePageController';
 import ICreatePageListener from '../../interfaces/ICreatePageListener';
 
 type CreateFormProps = {
-    pageManager: CreatePageController
+    pageManager: CreatePageController;
+    disabled: boolean;
 };
 type CreateFormState = {
     disabled: boolean;
@@ -33,7 +34,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
     {
         super(props);
         this.state = {
-            disabled: false,
+            disabled: this.props.disabled,
             contractType: CreateForm.CONTRACT_TYPE_DEFAULT,
             params: {},
             isCompiling: false,

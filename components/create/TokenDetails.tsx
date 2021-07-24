@@ -5,10 +5,12 @@ import ICreatePageListener from '../../interfaces/ICreatePageListener';
 import TokenDetailsStyles from '../../styles/TokenDetails.module.scss';
 
 type TokenDetailsProps = {
-    pageManager: CreatePageController
+    pageManager: CreatePageController;
+    disabled: boolean;
 };
 type TokenDetailsState = {
     contractStatus: 'Not Compiled' | 'Ready to Deploy' | 'Deployed';
+    disabled: boolean;
     compiled: boolean;
     deployed: boolean;
     detailsHTML: JSX.Element;
@@ -21,6 +23,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
     {
         super(props);
         this.state = {
+            disabled: this.props.disabled,
             contractStatus: 'Not Compiled',
             compiled: false,
             deployed: false,
@@ -119,7 +122,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                             <div className="col text-end">
                                 <button className="btn btn-sm btn-primary"
                                     onClick={(e) => this.props.pageManager.deployContract()}
-                                    disabled={!this.state.compiled}>
+                                    disabled={!this.state.compiled || this.state.disabled}>
                                     <span><FaRocket /> Deploy Your Contract!</span>
                                 </button>
                             </div>

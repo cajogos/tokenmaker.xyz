@@ -24,6 +24,7 @@ declare interface ProviderMessage
 // https://eips.ethereum.org/EIPS/eip-1193#request
 declare const ethereum: {
     isMetaMask: boolean,
+    chainId: string,
     networkVersion: string,
     selectedAddress: string | null,
     isConnected(): boolean,

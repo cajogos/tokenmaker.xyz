@@ -32,6 +32,7 @@ class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
 
     private populateStateWithWallet()
     {
+        console.log('populating state wallet button');
         this.setState({
             walletStatus: MetaMaskConnector.getState(),
             connected: MetaMaskConnector.getInstance().isConnected(),
@@ -52,12 +53,12 @@ class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
         }
     }
 
-    handleAccountChangedEvent(account: string | null): void
+    public handleAccountChangedEvent(account: string | null): void
     {
         this.populateStateWithWallet();
     }
 
-    handleNetworkChangedEvent(network: number | null): void
+    public handleNetworkChangedEvent(network: number | null): void
     {
         this.populateStateWithWallet();
     }
