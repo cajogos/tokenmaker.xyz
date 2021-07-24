@@ -6,7 +6,7 @@ declare interface RequestArguments
 
 declare interface ConnectInfo
 {
-    chainId: string
+    chainId: string;
 }
 
 declare interface ProviderRpcError extends Error
@@ -34,11 +34,11 @@ declare interface TokenWalletParams
 
 // https://eips.ethereum.org/EIPS/eip-1193#request
 declare const ethereum: {
-    isMetaMask: boolean,
-    chainId: string,
-    networkVersion: string,
-    selectedAddress: string | null,
-    isConnected(): boolean,
-    request: (args: RequestArguments) => Promise<any>,
-    on: (string, func) => any
+    isMetaMask: boolean;
+    chainId: string;
+    networkVersion: string;
+    selectedAddress: string | null;
+    isConnected(): boolean;
+    request: (args: RequestArguments) => Promise<any>;
+    on: (string, func) => any;
 };
