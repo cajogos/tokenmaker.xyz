@@ -104,7 +104,7 @@ class CreatePageController extends BaseController
         }
     }
 
-    public async deployContract(): Promise<void>
+    public async deployContract(): Promise<boolean>
     {
         if (this.contractCompiled)
         {
@@ -118,7 +118,9 @@ class CreatePageController extends BaseController
                 .deploy(this.contract.compiled.contracts[this.contract.contractType], args);
             this.fireContractDeployedEvent();
             this.contractDeployed = true;
+            return true;
         }
+        return false;
     }
 }
 

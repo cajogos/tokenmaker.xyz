@@ -2,11 +2,6 @@
 
 ## TODOs
 
-- Create Page:
-  - "Deploying..." status message
-  - Display contract address
-  - Add to Wallet button workign
-  - Display contract details after deployment
 - FAQs & Tutorial Page
   - User guide
 - Find suitable testing suite to test the frontend

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaInfoCircle, FaRocket, FaExclamationTriangle, FaStar, FaCheckCircle, FaPlusCircle, FaExternalLinkAlt } from 'react-icons/fa';
+import { FaInfoCircle, FaRocket, FaExclamationTriangle, FaStar, FaCheckCircle, FaPlusCircle, FaExternalLinkAlt, FaSpinner, FaCross, FaCheck, FaTimes } from 'react-icons/fa';
 import MetaMaskConnector from '../../classes/MetaMaskConnector';
 import CreatePageController from '../../controllers/CreatePageController';
 import ICreatePageListener from '../../interfaces/ICreatePageListener';
@@ -11,9 +11,10 @@ type TokenDetailsProps = {
     disabled: boolean;
 };
 type TokenDetailsState = {
-    contractStatus: 'Not Compiled' | 'Ready to Deploy' | 'Deployed';
+    contractStatus: 'Not Compiled' | 'Ready to Deploy' | 'Failed to Deploy' | 'Deployed';
     disabled: boolean;
     compiled: boolean;
+    deploying: boolean;
     deployed: boolean;
     detailsHTML: JSX.Element;
     tokenAddedToWallet: boolean;
@@ -29,6 +30,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
             disabled: this.props.disabled,
             contractStatus: 'Not Compiled',
             compiled: false,
+            deploying: false,
             deployed: false,
             detailsHTML: <></>,
             tokenAddedToWallet: false
@@ -82,6 +84,28 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                 })}
             </>
         );
+    }
+
+    private async startDeployment(): Promise<void>
+    {
+        this.setState({
+            deploying: true,
+            disabled: true
+        });
+        try
+        {
+            await this.props.pageManager.deployContract();
+        }
+        catch (e)
+        {
+            this.setState({
+                contractStatus: 'Failed to Deploy'
+            });
+        }
+        this.setState({
+            deploying: false,
+            disabled: false
+        });
     }
 
     public onContractDeployed(): void
@@ -160,14 +184,29 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                     <div className="card-footer">
                         <div className="row">
                             <div className="col text-start">
-                                <span className="small"><strong><FaExclamationTriangle /> Status: </strong> {this.state.contractStatus}</span>
+                                <span className="small">
+                                    <strong><FaExclamationTriangle /> Status: </strong>
+                                    {this.state.contractStatus === 'Failed to Deploy' ?
+                                        <span className="text-danger fw-bold">{this.state.contractStatus} <FaTimes /></span>
+                                        :
+                                        this.state.contractStatus === 'Deployed' ?
+                                            <span className="text-success fw-bold">{this.state.contractStatus} <FaCheck /></span>
+                                            :
+                                            <span>{this.state.contractStatus}</span>
+                                    }
+                                </span>
                             </div>
                             <div className="col text-end">
                                 <button className="btn btn-sm btn-primary"
-                                    onClick={(e) => this.props.pageManager.deployContract()}
+                                    onClick={this.startDeployment.bind(this)}
                                     disabled={!this.state.compiled || this.state.disabled}>
                                     <span><FaRocket /> Deploy Your Contract!</span>
                                 </button>
+                                {this.state.deploying &&
+                                    <div className="small fst-italic mt-2">
+                                        <FaSpinner className="icon-spin" /> Deploying... This may take a few minutes.
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
