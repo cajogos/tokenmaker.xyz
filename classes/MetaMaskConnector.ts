@@ -122,21 +122,21 @@ class MetaMaskConnector
     {
         return new Promise((resolve, reject) =>
         {
-            ethereum.request({
-                method: 'eth_requestAccounts'
-            }).then((accounts: string[]) =>
-            {
-                if (accounts.length > 0)
+            ethereum.request({ method: 'eth_requestAccounts' })
+                .then((accounts: string[]) =>
                 {
-                    this.currentAccount = accounts[0];
-                    resolve(true);
-                }
-                resolve(false);
-            }).catch((error: Error) =>
-            {
-                console.log(error);
-                resolve(false);
-            });
+                    if (accounts.length > 0)
+                    {
+                        this.currentAccount = accounts[0];
+                        resolve(true);
+                    }
+                    resolve(false);
+                })
+                .catch((error: Error) =>
+                {
+                    console.log(error);
+                    resolve(false);
+                });
         });
     }
 
@@ -174,7 +174,6 @@ class MetaMaskConnector
 
     public static getNetworkName(chainID: number | null): string
     {
-        console.log('chain name', chainID);
         switch (chainID)
         {
             case 1:
@@ -187,10 +186,23 @@ class MetaMaskConnector
                 return 'Goerli Testnet';
             case 42:
                 return 'Kovan Testnet';
-            case 1337:
+            case 1337: // Arbitrary value used for testnet Ganache
                 return 'Local Testnet';
         }
         return 'Unknown';
+    }
+
+    public static async addTokenToWallet(params: TokenWalletParams): Promise<boolean>
+    {
+        return new Promise((resolve, reject) =>
+        {
+            ethereum.request({ method: 'wallet_watchAsset', params })
+                .then((result: boolean) =>
+                {
+                    return resolve(result);
+                })
+                .catch(error => console.error(error));
+        });
     }
 }
 

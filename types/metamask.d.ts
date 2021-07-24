@@ -21,6 +21,17 @@ declare interface ProviderMessage
     data: unknown;
 }
 
+declare interface TokenWalletParams
+{
+    type: 'ERC20';
+    options: {
+        address: string;
+        symbol: string;
+        decimals: number;
+        image?: string;
+    }
+}
+
 // https://eips.ethereum.org/EIPS/eip-1193#request
 declare const ethereum: {
     isMetaMask: boolean,

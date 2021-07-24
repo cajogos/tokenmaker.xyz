@@ -10,6 +10,7 @@
   "author": "Carlos Ferreira",
   "license": "MIT",
   "dependencies": {
+    "@metamask/etherscan-link": "^2.1.0",
     "@openzeppelin/contracts": "^4.2.0",
     "bootstrap": "^5.0.2",
     "http-status-codes": "^2.1.4",

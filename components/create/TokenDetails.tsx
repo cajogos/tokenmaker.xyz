@@ -1,8 +1,10 @@
 import React from 'react';
-import { FaInfoCircle, FaRocket, FaExclamationTriangle, FaStar, FaCheckCircle, FaPlusCircle } from 'react-icons/fa';
+import { FaInfoCircle, FaRocket, FaExclamationTriangle, FaStar, FaCheckCircle, FaPlusCircle, FaExternalLinkAlt } from 'react-icons/fa';
+import MetaMaskConnector from '../../classes/MetaMaskConnector';
 import CreatePageController from '../../controllers/CreatePageController';
 import ICreatePageListener from '../../interfaces/ICreatePageListener';
 import TokenDetailsStyles from '../../styles/TokenDetails.module.scss';
+import etherscanLink from '@metamask/etherscan-link';
 
 type TokenDetailsProps = {
     pageManager: CreatePageController;
@@ -14,6 +16,7 @@ type TokenDetailsState = {
     compiled: boolean;
     deployed: boolean;
     detailsHTML: JSX.Element;
+    tokenAddedToWallet: boolean;
 };
 
 class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
@@ -27,7 +30,8 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
             contractStatus: 'Not Compiled',
             compiled: false,
             deployed: false,
-            detailsHTML: <></>
+            detailsHTML: <></>,
+            tokenAddedToWallet: false
         };
 
         this.props.pageManager.addListener(this);
@@ -88,12 +92,55 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
     {
         this.setState({
             contractStatus: 'Deployed',
-            compiled: false,
             deployed: true
         });
     }
 
+    private getEtherscanButton(): JSX.Element
+    {
+        const tokenAddress = this.props.pageManager.getContract().deployedAddress;
+        const networkId = MetaMaskConnector.getInstance().getCurrentNetwork();
+        const accountAddress = MetaMaskConnector.getInstance().getCurrentAccount();
+        if (tokenAddress === null || networkId === null || accountAddress === null)
+        {
+            return <></>;
+        }
+        const link = etherscanLink.createTokenTrackerLink(tokenAddress, networkId.toString(), accountAddress);
+        if (!link)
+        {
+            return <></>;
+        }
+        return (
+            <a
+                href={link}
+                className="btn btn-primary ms-2"
+                target="_blank"
+                rel="nofollow"><FaExternalLinkAlt /> View on Etherscan</a>
+        );
+    }
+
     public onContractChanged(): void { }
+
+    private async addTokenToWallet(): Promise<void>
+    {
+        const deployedAddress = this.props.pageManager.getContract().deployedAddress;
+        if (deployedAddress === null)
+        {
+            return;
+        }
+        const tokenSymbol = this.props.pageManager.getContract().arguments.tokenSymbol;
+        const added = await MetaMaskConnector.addTokenToWallet({
+            type: 'ERC20',
+            options: {
+                address: deployedAddress,
+                symbol: tokenSymbol,
+                decimals: 18
+            }
+        });
+        this.setState({
+            tokenAddedToWallet: added
+        });
+    }
 
     render()
     {
@@ -136,16 +183,19 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                         <h4><FaCheckCircle color="green" /> Token Deployed!</h4>
                         <ul>
                             <li>
-                                <strong>Contract Address: </strong> 0x0000...
-                            </li>
-                            <li>
-                                <strong>Transaction: </strong> 0x0000...
-                            </li>
-                            <li>
-                                <strong>Block: </strong> 0x0000...
+                                <strong>Contract Address: </strong> {this.props.pageManager.getContract().deployedAddress}
                             </li>
                         </ul>
-                        <a className="btn btn-success"><FaPlusCircle /> Add Token to your Wallet</a>
+                        <button
+                            className="btn btn-success"
+                            onClick={this.addTokenToWallet.bind(this)}>
+                            {this.state.tokenAddedToWallet ?
+                                <span><FaCheckCircle /> Token Added to Wallet!</span>
+                                :
+                                <span><FaPlusCircle /> Add Token to your Wallet</span>
+                            }
+                        </button>
+                        {this.getEtherscanButton()}
                     </>
                 }
             </>

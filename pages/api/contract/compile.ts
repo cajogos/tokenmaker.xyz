@@ -125,8 +125,6 @@ export default (req: NextApiRequest, res: NextApiResponse<ExpectedResponse>) =>
     res.status(StatusCodes.OK);
     const body = req.body;
 
-    console.log(body);
-
     // Validate the contract type
     let contractType = body.contractType?.trim();
     if (!contractType)
