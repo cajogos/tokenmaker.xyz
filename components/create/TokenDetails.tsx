@@ -76,10 +76,6 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                                 <strong>Bytecode:</strong>
                                 <pre>{JSON.stringify(contractData.bytecode.object, null, 2)}</pre>
                             </div>
-                            <div className={TokenDetailsStyles.tokenDetail}>
-                                <strong>Gas Estimates</strong>
-                                <pre>{JSON.stringify(contractData.gasEstimates.creation, null, 2)}</pre>
-                            </div>
                             <hr />
                         </div>
                     );

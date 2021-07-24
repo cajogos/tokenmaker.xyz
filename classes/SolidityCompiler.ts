@@ -8,8 +8,7 @@ type ContractResult = {
     [globalName: string]: {
         abi: any,
         bytecode: any,
-        deployedByteCode: any,
-        gasEstimates: any
+        deployedByteCode: any
     }
 }
 
@@ -55,8 +54,7 @@ class SolidityCompiler
             contracts[key] = {
                 abi: contract.abi,
                 bytecode: contract.evm?.bytecode,
-                deployedByteCode: contract.evm?.deployedBytecode,
-                gasEstimates: contract.evm?.gasEstimates
+                deployedByteCode: contract.evm?.deployedBytecode
             };
         }
 
