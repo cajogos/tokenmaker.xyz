@@ -6,6 +6,7 @@ import CreateTokenDetails from '../components/create/TokenDetails';
 import CreatePageController from '../controllers/CreatePageController';
 import ICreatePageListener from '../interfaces/ICreatePageListener';
 import IMetaMaskListener from '../interfaces/IMetaMaskListener';
+import Head from 'next/head';
 
 type CreatePageProps = {};
 type CreatePageState = {
@@ -97,6 +98,9 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
     {
         return (
             <>
+                <Head>
+                    <title>Create a Token | TokenMaker.xyz</title>
+                </Head>
                 <h2>Create your Token {this.state.walletInstalled && !this.state.walletConnected ? <span className="badge bg-danger"><FaExclamationTriangle /> Connect Your Wallet</span> : ''}</h2>
                 {this.state.walletInstalled ?
                     <>

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Head from 'next/head';
 
 type FAQs = {
     question: string;
@@ -25,6 +26,9 @@ const FAQsPage = () =>
 
     return (
         <>
+            <Head>
+                <title>FAQs | TokenMaker.xyz</title>
+            </Head>
             <h1>Frequently Asked Questions (FAQs)</h1>
             <p>These are some of the mostly asked questions for users of TokenMaker. The list grows as needed.</p>
             <div className="accordion" id="faqsAccordion">
