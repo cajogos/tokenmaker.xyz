@@ -30,7 +30,6 @@ const FAQsPage = () =>
             <div className="accordion" id="faqsAccordion">
                 {questions.map((question, index) =>
                 {
-                    console.log(question);
                     let accordionId = `faqsaccordion${index}`;
                     return (
                         <div className="accordion-item" key={accordionId}>
