@@ -6,6 +6,7 @@ type LayoutProps = {
     children: JSX.Element
 };
 
+// This is the main layout used throughout the application
 const Layout = ({ children }: LayoutProps) =>
 {
     return (

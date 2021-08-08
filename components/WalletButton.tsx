@@ -10,7 +10,8 @@ type WalletButtonState = {
     connectedNetwork: number | null
 };
 
-class WalletButton extends React.Component<WalletButtonProps, WalletButtonState> implements IMetaMaskListener
+class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
+    implements IMetaMaskListener
 {
     constructor(props: WalletButtonProps)
     {
@@ -22,10 +23,22 @@ class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
             connectedNetwork: null
         };
 
+        // Make this component listen to MetaMask events
         MetaMaskConnector.addListener(this);
     }
 
     public componentDidMount(): void
+    {
+        // On component mount we must check for the wallet state
+        this.populateStateWithWallet();
+    }
+
+    public onAccountChanged(account: string | null): void
+    {
+        this.populateStateWithWallet();
+    }
+
+    public onNetworkChanged(network: number | null): void
     {
         this.populateStateWithWallet();
     }
@@ -42,6 +55,7 @@ class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
 
     async handleClick()
     {
+        // This will trigger MetaMask to allow connection if not already connected
         if (!this.state.connected)
         {
             let connected = await MetaMaskConnector.getInstance().requestAccounts();
@@ -52,36 +66,37 @@ class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
         }
     }
 
-    public onAccountChanged(account: string | null): void
-    {
-        this.populateStateWithWallet();
-    }
-
-    public onNetworkChanged(network: number | null): void
-    {
-        this.populateStateWithWallet();
-    }
-
     render()
     {
-        return (
-            <>
-                {this.state.walletStatus === MetaMaskConnector.STATE_NOT_INSTALLED ?
+        // If the wallet is not installed we clicking the button will send the user to MetaMask
+        if (this.state.walletStatus === MetaMaskConnector.STATE_NOT_INSTALLED)
+        {
+            return (
+                <>
                     <a href="https://metamask.io/" className="btn btn-danger" target="_blank">
                         <span>Install MetaMask</span>
                     </a>
+                </>
+            );
+        }
+
+        // When the wallet is installed the user will have:
+        // - Wallet not connected: "Connect Your Wallet"
+        // - Wallet connected: Part of the hash of the connected account
+        return (
+            <>
+                <small className="text-danger fw-bold mx-3">{MetaMaskConnector.getNetworkName(this.state.connectedNetwork)}</small>
+                {this.state.connected ?
+                    <button className="btn btn-outline-success text-white">
+                        <span>{this.state.connectedAccount?.substr(0, 10) + '...' + this.state.connectedAccount?.substr(-5)}</span>
+                    </button>
                     :
-                    <>
-                        <small className="text-danger fw-bold mx-3">{MetaMaskConnector.getNetworkName(this.state.connectedNetwork)}</small>
-                        <button onClick={this.handleClick.bind(this)} className="btn btn-outline-light">
-                            <span>{this.state.connected ?
-                                this.state.connectedAccount?.substr(0, 10) + '...'
-                                :
-                                'Connect Your Wallet'}</span>
-                        </button>
-                    </>
+                    <button onClick={this.handleClick.bind(this)} className="btn btn-primary border-2 border-white">
+                        <span>Connect Your Wallet</span>
+                    </button>
                 }
             </>
+
         );
     }
 };

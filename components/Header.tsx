@@ -1,19 +1,15 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import NavLink from './NavLink';
-import { useRouter } from 'next/router';
 
 // Styles
 import headerStyles from '../styles/Header.module.scss'
 
 // Components
+import NavLink from './NavLink';
 import WalletButton from './WalletButton';
 
 const Header = () =>
 {
-    // Get the current path to match with active link
-    const { asPath } = useRouter();
-
     return (
         <header className="p-3 bg-dark text-white">
             <div className="container">

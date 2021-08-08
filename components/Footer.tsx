@@ -1,5 +1,6 @@
 import footerStyles from '../styles/Footer.module.scss'
 
+// This is the footer of the site
 const Footer = () =>
 {
     return (

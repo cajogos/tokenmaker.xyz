@@ -7,10 +7,11 @@ type NavLinkProps = {
     title: string
 };
 
+// The navbar of the site
 const NavLink = ({ path, text, title }: NavLinkProps) =>
 {
+    // Get the current path to enable the correct link
     const { asPath } = useRouter();
-
     return (
         <Link href={{ pathname: path }}>
             <a title={title} className={'nav-link px-2 ' + (asPath === path ? 'text-white' : 'text-secondary')}>
