@@ -1,4 +1,4 @@
-import solc, { Abi, CompilerInput, CompilerInputSources, CompilerOutput } from 'solc';
+import solc, { CompilerInput, CompilerInputSources, CompilerOutput } from 'solc';
 
 type CompilerSettings = {
     outputSelection: object
@@ -28,25 +28,21 @@ class SolidityCompiler
             content: fileContents
         };
 
-        // https://docs.soliditylang.org/en/v0.5.0/using-the-compiler.html#compiler-input-and-output-json-description
-
-        // Settings
+        // This is the default settings provided by Web3
         let settings: CompilerSettings = {
-            outputSelection: {
-                '*': {
-                    '*': ['*']
-                }
-            }
+            outputSelection: { '*': { '*': ['*'] } }
         };
 
+        // Prepare the input for the contract to be compiled
         const input: CompilerInput = { language: 'Solidity', sources, settings };
         const processed: string = JSON.stringify(input);
 
+        // Compile the contract using solc
         const compiled: string = solc.compile(processed);
         const parsed: CompilerOutput = JSON.parse(compiled);
 
+        // Once the array of contracts is parsed - prepare a better ouput (SolidityCompilerResult)
         const compiledContracts = parsed.contracts[contractName];
-
         let contracts: ContractResult = {};
         for (var key in compiledContracts)
         {
