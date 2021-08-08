@@ -43,6 +43,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
             tokenAddedToWallet: false
         };
 
+        // Add this component to the Create Page Controller listeners
         this.props.pageManager.addListener(this);
     }
 

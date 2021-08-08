@@ -13,7 +13,7 @@ type CreateFormState = {
     params: {
         [key: string]: any
     };
-    isCompiling: boolean;
+    compiling: boolean;
     hasError: boolean;
     errorCode: number;
     errorMessage: string;
@@ -28,35 +28,38 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
 
     // This sets the default contract state
     static CONTRACT_TYPE_DEFAULT: string = CreateForm.CONTRACT_TYPE_ERC20;
-    // static CONTRACT_TYPE_DEFAULT: string = CreateForm.CONTRACT_TYPE_COUNTER;
 
     constructor(props: CreateFormProps)
     {
         super(props);
         this.state = {
+            // Flag to check if the elements should be enabled / disabled
             disabled: this.props.disabled,
+            // The chosen contract type
             contractType: CreateForm.CONTRACT_TYPE_DEFAULT,
+            // The parameters for the contract
             params: {},
-            isCompiling: false,
+            // Flag to check if the contract is being compiled
+            compiling: false,
+            // Flag to check if the contract parameters are valid
             hasError: false,
             errorCode: 0,
             errorMessage: ''
         };
 
+        // Add this component to the Create Page Controller listeners
         this.props.pageManager.addListener(this);
     }
 
     public onPageEnabled(isEnabled: boolean): void
     {
-        this.setState({
-            disabled: !isEnabled
-        });
+        this.setState({ disabled: !isEnabled });
     }
 
     public onContractCompiledError(errorCode: number, errorMessage: string): void
     {
         this.setState({
-            isCompiling: false,
+            compiling: false,
             disabled: false,
             hasError: true,
             errorCode: errorCode,
@@ -66,58 +69,57 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
 
     public onContractChanged(): void { }
 
+    // This function will be called when the contract has been compiled by the controller
     public onContractCompiled(): void
     {
-        this.setState({
-            isCompiling: false,
-            disabled: false,
-            hasError: false
-        });
+        this.setState({ compiling: false, disabled: false, hasError: false });
     }
 
     public onContractDeployed(): void { }
 
-    async onFormSubmission(e: React.FormEvent<HTMLFormElement>)
+    private async onFormSubmission(e: React.FormEvent<HTMLFormElement>)
     {
+        // Stop the form from submitting
         e.preventDefault();
 
-        this.setState({
-            disabled: true,
-            isCompiling: true
-        });
+        // Disable the form while the contract is being compiled
+        this.setState({ disabled: true, compiling: true });
 
+        // Send the contract to the compilation using the controller
         await this.props.pageManager.compileContract({
             contractType: this.state.contractType,
             arguments: this.state.params
         });
     }
 
-    handleContractTypeChange(event: BaseSyntheticEvent)
+    private handleContractTypeChange(event: BaseSyntheticEvent)
     {
-        this.setState({
-            contractType: event.target.value,
-            params: {}
-        });
+        this.setState({ contractType: event.target.value, params: {} });
+
+        // Alert the controller that the contract type has changed
         this.props.pageManager.setContractType(this.state.contractType);
     }
 
-    handleParamChange(event: BaseSyntheticEvent, param: string)
+    private handleParamChange(event: BaseSyntheticEvent, param: string)
     {
+        // Get the current params to be changed
         let currentParams = this.state.params;
         currentParams[param] = event.target.value.trim();
-        this.setState({
-            params: currentParams
-        });
+
+        // Update the state with the new params
+        this.setState({ params: currentParams });
     }
 
-    renderForContractType(): JSX.Element
+    private renderForContractType(): JSX.Element
     {
+        // Display the params for the Counter contract (test contract)
         if (this.state.contractType === CreateForm.CONTRACT_TYPE_COUNTER)
         {
             return (
                 <div className="alert alert-info">No params required.</div>
             );
         }
+        // Display the params for the ERC20 contract
         if (this.state.contractType === CreateForm.CONTRACT_TYPE_ERC20)
         {
             return (
@@ -155,7 +157,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                 </>
             );
         }
-        return (<></>);
+        return <></>;
     }
 
     render()
@@ -174,17 +176,27 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
                     </select>
                     <div id="contractTypeHelp" className="form-text">Choose the contract type for your token.</div>
                 </div>
+
+                {/* Display an error if there are any */}
                 {this.state.hasError &&
                     <div className="alert alert-danger">
                         <FaExclamationTriangle className="me-2" /><strong>Error {this.state.errorCode}: </strong><span>{this.state.errorMessage}</span>
                     </div>
                 }
+
+                {/* Each contract has their own set of required params */}
                 {this.renderForContractType()}
+
+                {/* This button will submit the form for contract compilation */}
                 <button type="submit" className="btn btn-primary" disabled={this.state.disabled}>
                     <span><FaCheck /> Confirm Details</span>
                 </button>
-                {this.state.isCompiling &&
-                    <span className="fst-italic small ms-3"><FaSpinner className="icon-spin me-1" /> Compiling...</span>
+
+                {/* Display a message while the contract is being compiled */}
+                {this.state.compiling &&
+                    <span className="fst-italic small ms-3">
+                        <FaSpinner className="icon-spin me-1" /> Compiling...
+                    </span>
                 }
             </form>
         );
