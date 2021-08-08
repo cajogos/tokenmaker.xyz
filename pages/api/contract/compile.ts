@@ -13,22 +13,20 @@ const ERROR_NO_INITIAL_SUPPLY = 604;
 const ERROR_INITIAL_SUPPLY_MUST_BE_NUMBER = 605;
 const ERROR_INITIAL_SUPPLY_MUST_BE_POSITIVE = 606;
 
+// Utility function to display an error
 const DisplayError = (res: NextApiResponse<ExpectedResponse>, error: APIError) =>
 {
     return res.json({ success: false, error });
 };
 
+// Handle the Counter contract (no params required)
 const HandleContractCounter = (res: NextApiResponse<ExpectedResponse>, args: {}) =>
 {
     let contract = new Counter();
     let compiled: SolidityCompilerResult = contract.compile();
     return res.json({
-        success: true, result: {
-            input: args,
-            output: {
-                compiled
-            }
-        }
+        success: true,
+        result: { input: args, output: { compiled } }
     });
 };
 
@@ -37,6 +35,8 @@ type ERC20Arguments = {
     tokenSymbol: string;
     initialSupply: string;
 };
+
+// Handle the ERC20 contract
 const HandleContractERC20 = (res: NextApiResponse<ExpectedResponse>, args: ERC20Arguments) =>
 {
     // Validate Token Name
@@ -93,19 +93,21 @@ const HandleContractERC20 = (res: NextApiResponse<ExpectedResponse>, args: ERC20
     let contract = new ERC20();
     contract.addArgument(tokenName);
     contract.addArgument(tokenSymbol);
+
     // The number of initial supply is replaced in the contract (arbitrary value is used)
     contract.addReplacement('111222333444555666777', realInitialSupply.toString());
+
+    // Compile the modified contract
     let compiled: SolidityCompilerResult = contract.compile();
     return res.json({
-        success: true, result: {
+        success: true,
+        result: {
             input: {
                 tokenName: tokenName,
                 tokenSymbol: tokenSymbol,
                 initialSupply: initialSupplyNumber
             },
-            output: {
-                compiled
-            }
+            output: { compiled }
         }
     });
 };
@@ -122,11 +124,14 @@ export default (req: NextApiRequest, res: NextApiResponse<ExpectedResponse>) =>
         });
     }
 
+    // The response should be good (status 200)
     res.status(StatusCodes.OK);
+
     const body = req.body;
 
-    // Validate the contract type
     let contractType = body.contractType?.trim();
+
+    // If no contract type has been provided
     if (!contractType)
     {
         return DisplayError(res, {
@@ -135,15 +140,14 @@ export default (req: NextApiRequest, res: NextApiResponse<ExpectedResponse>) =>
         });
     }
 
+    // Call the appropriate function for the contract type
     switch (contractType)
     {
-        case 'Counter':
-            return HandleContractCounter(res, body.arguments);
-        case 'ERC20':
-            return HandleContractERC20(res, body.arguments);
+        case 'Counter': return HandleContractCounter(res, body.arguments);
+        case 'ERC20': return HandleContractERC20(res, body.arguments);
     }
 
-    // Given contract type is invalid
+    // Given contract type is not valid
     return DisplayError(res, {
         errorCode: ERROR_INVALID_CONTRACT,
         errorMessage: `The contract ${contractType} is an invalid type.`
