@@ -26,8 +26,7 @@ class MetaMaskConnector
     private listeners: IMetaMaskListener[] = [];
     public static addListener(listener: IMetaMaskListener): void
     {
-        MetaMaskConnector.getInstance()
-            .listeners.push(listener);
+        MetaMaskConnector.getInstance().listeners.push(listener);
     }
 
     private constructor()
@@ -41,12 +40,16 @@ class MetaMaskConnector
 
     private checkCurrentState()
     {
+        // Checks the current state of MetaMask and assigns it to the state variable
         this.state = MetaMaskConnector.STATE_NOT_INSTALLED;
         if (typeof ethereum !== 'undefined')
         {
             this.state = MetaMaskConnector.STATE_NOT_CONNECTED;
 
+            // Loading the chain ID is an asynchronous process - can be done in parallel
             this.loadChainID();
+
+            // Get the current account from MetaMask and if it's not null then we are connected
             this.currentAccount = ethereum.selectedAddress;
             if (ethereum.isConnected() && this.currentAccount !== null)
             {
@@ -59,9 +62,8 @@ class MetaMaskConnector
     {
         ethereum.request({ method: 'eth_chainId' })
             .then((chainID: string) =>
-            {
-                this.handleNetworkChanged(parseInt(chainID, 16));
-            })
+                this.fireNetworkChangedEvent(parseInt(chainID, 16))
+            )
             .catch(error => console.error(error));
     }
 
@@ -94,26 +96,20 @@ class MetaMaskConnector
     {
         if (typeof ethereum !== 'undefined')
         {
-            ethereum.on('accountsChanged', (accounts: Array<string>): void =>
-            {
-                this.handleAccountsChanged(accounts);
-            });
-            ethereum.on('chainChanged', (chainID: string): void =>
-            {
-                this.handleNetworkChanged(parseInt(chainID, 16));
-            });
-            ethereum.on('message', (message: ProviderMessage): void =>
-            {
-                console.log(message);
-            });
-            ethereum.on('connect', (connectInfo: ConnectInfo) =>
-            {
-                console.log(connectInfo);
-            });
-            ethereum.on('disconnect', (error: ProviderRpcError) =>
-            {
-                console.log(error);
-            });
+            // Event to check when account is changed
+            ethereum.on('accountsChanged',
+                (accounts: Array<string>): void => this.fireAccountsChangedEvent(accounts)
+            );
+
+            // Event to check when the chain ID is changed
+            ethereum.on('chainChanged',
+                (chainID: string): void => this.fireNetworkChangedEvent(parseInt(chainID, 16))
+            );
+
+            // Extra events for MetaMask - could be used in the future
+            ethereum.on('message', (message: ProviderMessage): void => console.log('message', message));
+            ethereum.on('connect', (connectInfo: ConnectInfo) => console.log('connect', connectInfo));
+            ethereum.on('disconnect', (error: ProviderRpcError) => console.log('disconnect', error));
         }
     }
 
@@ -121,53 +117,48 @@ class MetaMaskConnector
     {
         return new Promise((resolve, reject) =>
         {
+            // This will request the accounts from MetaMask - triggering a connection to the wallet
             ethereum.request({ method: 'eth_requestAccounts' })
                 .then((accounts: string[]) =>
                 {
                     if (accounts.length > 0)
                     {
-                        this.handleAccountsChanged(accounts);
+                        // If accounts are returned then fire the event
+                        this.fireAccountsChangedEvent(accounts);
                         resolve(true);
                     }
                     resolve(false);
                 })
-                .catch((error: Error) =>
-                {
-                    console.log(error);
-                    resolve(false);
-                });
+                .catch((error: Error) => resolve(false));
         });
     }
 
-    private handleAccountsChanged(accounts: string[]): void
+    private fireAccountsChangedEvent(accounts: string[]): void
     {
         if (this.currentAccount !== accounts[0])
         {
             this.currentAccount = accounts[0];
-            if (typeof this.currentAccount === 'undefined')
-            {
-                this.state = MetaMaskConnector.STATE_NOT_CONNECTED;
-            }
-            else
-            {
-                this.state = MetaMaskConnector.STATE_CONNECTED;
-            }
-            this.listeners.forEach((l) =>
-            {
-                l.handleAccountChangedEvent(this.currentAccount);
-            });
+            // Determine if the wallet is connected by the account received (undefined means not connected)
+            this.state = (typeof this.currentAccount === 'undefined') ?
+                MetaMaskConnector.STATE_NOT_CONNECTED : MetaMaskConnector.STATE_CONNECTED;
+
+            // Tell the listeners the account has changed
+            this.listeners.forEach((listener: IMetaMaskListener) =>
+                listener.handleAccountChangedEvent(this.currentAccount)
+            );
         }
     }
 
-    private handleNetworkChanged(chainID: number): void
+    private fireNetworkChangedEvent(chainID: number): void
     {
         if (this.currentNetwork !== chainID)
         {
             this.currentNetwork = chainID;
-            this.listeners.forEach((l) =>
-            {
-                l.handleNetworkChangedEvent(this.currentNetwork);
-            });
+
+            // Tell the listeners the network has changed
+            this.listeners.forEach((listener: IMetaMaskListener) =>
+                listener.handleNetworkChangedEvent(this.currentNetwork)
+            );
         }
     }
 
@@ -175,18 +166,13 @@ class MetaMaskConnector
     {
         switch (chainID)
         {
-            case 1:
-                return 'Ethereum Mainnet';
-            case 3:
-                return 'Ropsten Testnet';
-            case 4:
-                return 'Rinkeby Testnet';
-            case 5:
-                return 'Goerli Testnet';
-            case 42:
-                return 'Kovan Testnet';
-            case 1337: // Arbitrary value used for testnet Ganache
-                return 'Local Testnet';
+            case 1: return 'Ethereum Mainnet';
+            case 3: return 'Ropsten Testnet';
+            case 4: return 'Rinkeby Testnet';
+            case 5: return 'Goerli Testnet';
+            case 42: return 'Kovan Testnet';
+            // Arbitrary value used for testnet Ganache
+            case 1337: return 'Local Testnet';
         }
         return 'Unknown';
     }
@@ -195,11 +181,9 @@ class MetaMaskConnector
     {
         return new Promise((resolve, reject) =>
         {
+            // This will call MetaMask to add the token to the wallet
             ethereum.request({ method: 'wallet_watchAsset', params })
-                .then((result: boolean) =>
-                {
-                    return resolve(result);
-                })
+                .then((result: boolean) => resolve(result))
                 .catch(error => console.error(error));
         });
     }
