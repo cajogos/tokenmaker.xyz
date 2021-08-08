@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaInfoCircle, FaRocket, FaExclamationTriangle, FaStar, FaCheckCircle, FaPlusCircle, FaExternalLinkAlt, FaSpinner, FaCross, FaCheck, FaTimes } from 'react-icons/fa';
+import { FaInfoCircle, FaRocket, FaExclamationTriangle, FaStar, FaCheckCircle, FaPlusCircle, FaExternalLinkAlt, FaSpinner, FaCross, FaCheck, FaTimes, FaAddressBook, FaAddressCard, FaEthereum } from 'react-icons/fa';
 import MetaMaskConnector from '../../classes/MetaMaskConnector';
 import CreatePageController from '../../controllers/CreatePageController';
 import ICreatePageListener from '../../interfaces/ICreatePageListener';
@@ -11,6 +11,7 @@ type TokenDetailsProps = {
     disabled: boolean;
 };
 type TokenDetailsState = {
+    // The contract is only allowed to be in these states
     contractStatus: 'Not Compiled' | 'Ready to Deploy' | 'Failed to Deploy' | 'Deployed';
     disabled: boolean;
     compiled: boolean;
@@ -27,12 +28,18 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
     {
         super(props);
         this.state = {
-            disabled: this.props.disabled,
             contractStatus: 'Not Compiled',
+            // Flag used to enable / disable the elements on the page
+            disabled: this.props.disabled,
+            // Flag to tell if the contract is compiled
             compiled: false,
+            // Flag to check if the contract is being deployed
             deploying: false,
+            // Flag to tell if the contract is deployed
             deployed: false,
+            // The details of the contract (JSX fragment by default)
             detailsHTML: <></>,
+            // Flag to track if the token was added to the wallet
             tokenAddedToWallet: false
         };
 
@@ -66,12 +73,14 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
 
     private getDetailsHTML(contracts: any, args: any): JSX.Element
     {
+        // This returns a JSX element with the contract details
         return (
             <>
                 <div className={TokenDetailsStyles.tokenDetail + ' mb-3'}>
                     <strong>Arguments</strong>
                     <pre>{JSON.stringify(args, null, 2)}</pre>
                 </div>
+                {/* Loop through the contracts obtained (this is usually one contract) */}
                 {Object.entries(contracts).map(([contract, contractData]: any) =>
                 {
                     return (
@@ -123,6 +132,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
         });
     }
 
+    // Gets a button to Ethercan (only works on public testnets)
     private getEtherscanButton(): JSX.Element
     {
         const tokenAddress = this.props.pageManager.getContract().deployedAddress;
@@ -132,30 +142,33 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
         {
             return <></>;
         }
-        const link = etherscanLink.createTokenTrackerLink(tokenAddress, networkId.toString(), accountAddress);
-        if (!link)
-        {
-            return <></>;
-        }
+        const link = etherscanLink.createTokenTrackerLink(
+            tokenAddress,
+            networkId.toString(),
+            accountAddress
+        );
+        // Failed to obtain link (usually happens for non-public testnets)
+        if (!link) return <></>;
+
+        // Return the link with a nofollow attribute
         return (
-            <a
-                href={link}
-                className="btn btn-primary ms-2"
-                target="_blank"
-                rel="nofollow"><FaExternalLinkAlt /> View on Etherscan</a>
+            <a href={link} className="btn btn-primary ms-2" target="_blank" rel="nofollow">
+                <span><FaExternalLinkAlt /> View on Etherscan</span>
+            </a>
         );
     }
 
     public onContractChanged(): void { }
 
+    // Function to allow to easily add the new token to MetaMask wallet
     private async addTokenToWallet(): Promise<void>
     {
         const deployedAddress = this.props.pageManager.getContract().deployedAddress;
-        if (deployedAddress === null)
-        {
-            return;
-        }
+        if (deployedAddress === null) return;
+
         const tokenSymbol = this.props.pageManager.getContract().arguments.tokenSymbol;
+
+        // Call MetaMask to add the new token
         const added = await MetaMaskConnector.addTokenToWallet({
             type: 'ERC20',
             options: {
@@ -178,15 +191,16 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                         <span className="small"><FaInfoCircle /> Confirm the token details below before deployment.</span>
                     </div>
                     <div className="card-body">
-                        <h5 className="card-title">Token Details</h5>
                         {this.state.compiled ?
-                            <div>{this.state.detailsHTML}</div>
+                            <div>
+                                <h5 className="card-title">Token Details</h5>
+                                <div>{this.state.detailsHTML}</div>
+                            </div>
                             :
                             <div className="alert alert-danger">
-                                <span>The token has not been compiled yet, please confirm its details.</span>
+                                <span><FaExclamationTriangle /> The token has not been compiled yet, please confirm its details.</span>
                             </div>
                         }
-
                     </div>
                     <div className="card-footer">
                         <div className="row">
@@ -219,18 +233,14 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                     </div>
                 </div>
 
+                {/* When the token is deployed */}
                 {this.state.deployed &&
-                    <>
-                        <hr />
+                    <div className="border-top mt-3 pt-3 px-2">
                         <h4><FaCheckCircle color="green" /> Token Deployed!</h4>
-                        <ul>
-                            <li>
-                                <strong>Contract Address: </strong> {this.props.pageManager.getContract().deployedAddress}
-                            </li>
-                        </ul>
-                        <button
-                            className="btn btn-success"
-                            onClick={this.addTokenToWallet.bind(this)}>
+                        <div className="my-3">
+                            <strong><FaEthereum /> Address: </strong> <span className="fst-italic">{this.props.pageManager.getContract().deployedAddress}</span>
+                        </div>
+                        <button className="btn btn-success" onClick={this.addTokenToWallet.bind(this)}>
                             {this.state.tokenAddedToWallet ?
                                 <span><FaCheckCircle /> Token Added to Wallet!</span>
                                 :
@@ -238,7 +248,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
                             }
                         </button>
                         {this.getEtherscanButton()}
-                    </>
+                    </div>
                 }
             </>
         );
