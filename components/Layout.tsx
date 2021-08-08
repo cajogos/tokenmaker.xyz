@@ -12,6 +12,7 @@ const Layout = ({ children }: LayoutProps) =>
         <>
             <Head>
                 <link rel="shortcut icon" href="/favicon.ico" />
+                <meta name="robots" content="noindex" />
             </Head>
             <Header />
             <div className="content-wrapper container">{children}</div>
