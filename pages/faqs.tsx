@@ -6,13 +6,16 @@ type FAQs = {
     answer: string;
 }[];
 
+// The FAQs page
 const FAQsPage = () =>
 {
     useEffect(() =>
     {
+        // This call is required to be able to use Bootstrap's Accordion on the page
         typeof document !== undefined ? require('bootstrap/dist/js/bootstrap') : null
     }, []);
 
+    // The faqs array
     const questions: FAQs = [{
         question: 'Is it safe to use this website?',
         answer: 'The website uses a valid MetaMask connection to the Ethereum network of your choice. The website is as safe as your device is.'

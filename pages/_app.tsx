@@ -8,6 +8,7 @@ import Layout from '../components/Layout'
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/main.scss';
 
+// This is the main Next.js app file
 const MyApp = ({ Component, pageProps }: AppProps) =>
 {
     return (

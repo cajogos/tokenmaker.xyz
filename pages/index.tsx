@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+// The homepage
 const HomePage = () =>
 {
     return (

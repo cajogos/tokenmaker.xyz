@@ -19,7 +19,7 @@ type CreatePageState = {
 class CreatePage extends React.Component<CreatePageProps, CreatePageState>
     implements ICreatePageListener, IMetaMaskListener
 {
-    private manager: CreatePageController;
+    private controller: CreatePageController;
 
     constructor(props: CreatePageProps)
     {
@@ -31,11 +31,18 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
             lastEvent: 'None'
         };
 
-        this.manager = new CreatePageController();
-        this.manager.addListener(this);
+        this.controller = new CreatePageController();
+        this.controller.addListener(this);
 
+        // Make the crate page listen to MetaMask events
         MetaMaskConnector.addListener(this);
     }
+    public componentDidMount()
+    {
+        // On component mount we check for the wallet state
+        this.checkWalletState();
+    }
+
 
     public onPageEnabled(isEnabled: boolean): void { }
 
@@ -51,35 +58,22 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
 
     public onContractChanged(): void
     {
-        this.setState({
-            lastEvent: 'Contract Changed'
-        });
+        this.setState({ lastEvent: 'Contract Changed' });
     }
 
     public onContractCompiled(): void
     {
-        this.setState({
-            lastEvent: 'Contract Compiled'
-        });
+        this.setState({ lastEvent: 'Contract Compiled' });
     }
 
     public onContractCompiledError(errorCode: number, errorMessage: string): void
     {
-        this.setState({
-            lastEvent: 'Contract Compilation Error'
-        });
+        this.setState({ lastEvent: 'Contract Compilation Error' });
     }
 
     public onContractDeployed(): void
     {
-        this.setState({
-            lastEvent: 'Contract Deployed'
-        });
-    }
-
-    public componentDidMount()
-    {
-        this.checkWalletState();
+        this.setState({ lastEvent: 'Contract Deployed' });
     }
 
     private checkWalletState()
@@ -97,7 +91,7 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
             walletConnected: walletConnected
         });
 
-        this.manager.setEnabled(!pageShouldBeDisabled);
+        this.controller.setEnabled(!pageShouldBeDisabled);
     }
 
     render()
@@ -107,18 +101,26 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
                 <Head>
                     <title>Create a Token | TokenMaker</title>
                 </Head>
-                <h2>Create your Token {this.state.walletInstalled && !this.state.walletConnected ? <span className="badge bg-danger"><FaExclamationTriangle /> Connect Your Wallet</span> : ''}</h2>
+                <h2>
+                    Create your Token {this.state.walletInstalled && !this.state.walletConnected ?
+                        <span className="badge bg-danger"><FaExclamationTriangle /> Connect Your Wallet</span> : ''}
+                </h2>
                 {this.state.walletInstalled ?
                     <>
+                        {/* Display the last event that happened */}
                         <p className="alert alert-secondary small">
                             <span><FaInfoCircle /> <strong>Last Event:</strong> {this.state.lastEvent}</span>
                         </p>
                         <div className="row">
                             <div className="col-md-6">
-                                <CreateForm pageManager={this.manager} disabled={this.state.pageDisabled} />
+                                <CreateForm
+                                    pageManager={this.controller}
+                                    disabled={this.state.pageDisabled} />
                             </div>
                             <div className="col-md-6 mt-3">
-                                <CreateTokenDetails pageManager={this.manager} disabled={this.state.pageDisabled} />
+                                <CreateTokenDetails
+                                    pageManager={this.controller}
+                                    disabled={this.state.pageDisabled} />
                             </div>
                         </div>
                     </>
