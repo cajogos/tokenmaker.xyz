@@ -1,5 +1,1 @@
-class BaseController
-{
-}
-
-export default BaseController;
+export default class BaseController { };

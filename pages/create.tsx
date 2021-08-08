@@ -39,12 +39,12 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
 
     public onPageEnabled(isEnabled: boolean): void { }
 
-    public handleAccountChangedEvent(account: string | null): void
+    public onAccountChanged(account: string | null): void
     {
         this.checkWalletState();
     }
 
-    public handleNetworkChangedEvent(network: number | null): void
+    public onNetworkChanged(network: number | null): void
     {
         this.checkWalletState();
     }

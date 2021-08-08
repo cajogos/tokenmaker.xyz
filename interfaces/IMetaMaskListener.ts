@@ -1,5 +1,5 @@
 export default interface IMetaMaskListener
 {
-    handleAccountChangedEvent(account: string | null): void;
-    handleNetworkChangedEvent(network: number | null): void;
+    onAccountChanged(account: string | null): void;
+    onNetworkChanged(network: number | null): void;
 }

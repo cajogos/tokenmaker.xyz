@@ -144,7 +144,7 @@ class MetaMaskConnector
 
             // Tell the listeners the account has changed
             this.listeners.forEach((listener: IMetaMaskListener) =>
-                listener.handleAccountChangedEvent(this.currentAccount)
+                listener.onAccountChanged(this.currentAccount)
             );
         }
     }
@@ -157,7 +157,7 @@ class MetaMaskConnector
 
             // Tell the listeners the network has changed
             this.listeners.forEach((listener: IMetaMaskListener) =>
-                listener.handleNetworkChangedEvent(this.currentNetwork)
+                listener.onNetworkChanged(this.currentNetwork)
             );
         }
     }

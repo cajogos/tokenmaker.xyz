@@ -1,4 +1,4 @@
-interface ICreatePageListener
+export default interface ICreatePageListener
 {
     onPageEnabled(isEnabled: boolean): void;
     onContractChanged(): void;
@@ -6,5 +6,3 @@ interface ICreatePageListener
     onContractDeployed(): void;
     onContractCompiledError(errorCode: number, errorMessage: string): void;
 }
-
-export default ICreatePageListener;

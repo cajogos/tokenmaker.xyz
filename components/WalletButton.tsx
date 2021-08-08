@@ -52,12 +52,12 @@ class WalletButton extends React.Component<WalletButtonProps, WalletButtonState>
         }
     }
 
-    public handleAccountChangedEvent(account: string | null): void
+    public onAccountChanged(account: string | null): void
     {
         this.populateStateWithWallet();
     }
 
-    public handleNetworkChangedEvent(network: number | null): void
+    public onNetworkChanged(network: number | null): void
     {
         this.populateStateWithWallet();
     }
