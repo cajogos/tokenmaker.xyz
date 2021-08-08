@@ -1,17 +1,8 @@
-import BaseContract, { ContractReplacements } from './BaseContract';
-import { SolidityCompilerResult } from '../SolidityCompiler';
+import BaseContract from './BaseContract';
 
 class ERC20 extends BaseContract
 {
-    public getContractName(): string
-    {
-        return 'ERC20';
-    }
-
-    public compile(): SolidityCompilerResult
-    {
-        return this.compileContract();
-    }
+    protected contractName = 'ERC20';
 }
 
 export default ERC20;
