@@ -33,7 +33,11 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
 
         this.manager = new CreatePageController();
         this.manager.addListener(this);
+
+        MetaMaskConnector.addListener(this);
     }
+
+    public onPageEnabled(isEnabled: boolean): void { }
 
     public handleAccountChangedEvent(account: string | null): void
     {
@@ -92,6 +96,8 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
             pageDisabled: pageShouldBeDisabled,
             walletConnected: walletConnected
         });
+
+        this.manager.setEnabled(!pageShouldBeDisabled);
     }
 
     render()

@@ -46,6 +46,13 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
         this.props.pageManager.addListener(this);
     }
 
+    public onPageEnabled(isEnabled: boolean): void
+    {
+        this.setState({
+            disabled: !isEnabled
+        });
+    }
+
     public onContractCompiledError(errorCode: number, errorMessage: string): void
     {
         this.setState({

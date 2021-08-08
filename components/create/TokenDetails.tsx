@@ -39,6 +39,13 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
         this.props.pageManager.addListener(this);
     }
 
+    public onPageEnabled(isEnabled: boolean): void
+    {
+        this.setState({
+            disabled: !isEnabled
+        });
+    }
+
     public onContractCompiled(): void
     {
         this.setState({

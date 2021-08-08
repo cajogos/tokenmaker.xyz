@@ -48,7 +48,6 @@ class MetaMaskConnector
 
             this.loadChainID();
             this.currentAccount = ethereum.selectedAddress;
-
             if (ethereum.isConnected() && this.currentAccount !== null)
             {
                 this.state = MetaMaskConnector.STATE_CONNECTED;
@@ -127,7 +126,7 @@ class MetaMaskConnector
                 {
                     if (accounts.length > 0)
                     {
-                        this.currentAccount = accounts[0];
+                        this.handleAccountsChanged(accounts);
                         resolve(true);
                     }
                     resolve(false);

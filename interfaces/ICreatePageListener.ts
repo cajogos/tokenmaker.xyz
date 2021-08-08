@@ -1,5 +1,6 @@
 interface ICreatePageListener
 {
+    onPageEnabled(isEnabled: boolean): void;
     onContractChanged(): void;
     onContractCompiled(): void;
     onContractDeployed(): void;

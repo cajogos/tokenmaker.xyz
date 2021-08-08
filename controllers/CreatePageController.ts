@@ -26,7 +26,6 @@ class CreatePageController extends BaseController
     private listeners: ICreatePageListener[] = [];
 
     private contractCompiled: boolean = false;
-    private contractDeployed: boolean = false;
 
     private contract: ControllerContract = {
         contractType: '',
@@ -53,24 +52,34 @@ class CreatePageController extends BaseController
         this.listeners.push(listener);
     }
 
+    public setEnabled(isEnabled: boolean): void
+    {
+        this.firePageEnabledEvent(isEnabled);
+    }
+
+    private firePageEnabledEvent(isEnabled: boolean): void
+    {
+        this.listeners.forEach((listener: ICreatePageListener) => listener.onPageEnabled(isEnabled));
+    }
+
     private fireContractChangedEvent(): void
     {
-        this.listeners.forEach(listener => listener.onContractChanged());
+        this.listeners.forEach((listener: ICreatePageListener) => listener.onContractChanged());
     }
 
     private fireContractCompiledEvent(): void
     {
-        this.listeners.forEach(listener => listener.onContractCompiled());
+        this.listeners.forEach((listener: ICreatePageListener) => listener.onContractCompiled());
     }
 
     private fireContractCompiledErrorEvent(errorCode: number, errorMessage: string): void
     {
-        this.listeners.forEach(listener => listener.onContractCompiledError(errorCode, errorMessage));
+        this.listeners.forEach((listener: ICreatePageListener) => listener.onContractCompiledError(errorCode, errorMessage));
     }
 
     private fireContractDeployedEvent(): void
     {
-        this.listeners.forEach(listener => listener.onContractDeployed());
+        this.listeners.forEach((listener: ICreatePageListener) => listener.onContractDeployed());
     }
 
     public async compileContract(contract: ContractToCompile): Promise<void>
