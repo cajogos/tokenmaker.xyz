@@ -23,34 +23,19 @@ type ControllerContract = {
 
 class CreatePageController extends BaseController
 {
-    private listeners: ICreatePageListener[] = [];
-
     private contractCompiled: boolean = false;
     private contractDeployed: boolean = false;
 
+    // The contract object will be used to store information in memory
     private contract: ControllerContract = {
         contractType: '',
         arguments: {},
-        compiled: {
-            contracts: {}
-        },
+        compiled: { contracts: {} },
         deployedAddress: null
     };
-
-    public setContractType(contractType: string): void
-    {
-        this.contract.contractType = contractType;
-        this.fireContractChangedEvent();
-    }
-
     public getContract(): ControllerContract
     {
         return this.contract;
-    }
-
-    public addListener(listener: ICreatePageListener): void
-    {
-        this.listeners.push(listener);
     }
 
     public setEnabled(isEnabled: boolean): void
@@ -58,33 +43,21 @@ class CreatePageController extends BaseController
         this.firePageEnabledEvent(isEnabled);
     }
 
-    private firePageEnabledEvent(isEnabled: boolean): void
+    public setContractType(contractType: string): void
     {
-        this.listeners.forEach((listener: ICreatePageListener) => listener.onPageEnabled(isEnabled));
+        this.contract.contractType = contractType;
+        this.fireContractChangedEvent();
     }
 
-    private fireContractChangedEvent(): void
+    private listeners: ICreatePageListener[] = [];
+    public addListener(listener: ICreatePageListener): void
     {
-        this.listeners.forEach((listener: ICreatePageListener) => listener.onContractChanged());
-    }
-
-    private fireContractCompiledEvent(): void
-    {
-        this.listeners.forEach((listener: ICreatePageListener) => listener.onContractCompiled());
-    }
-
-    private fireContractCompiledErrorEvent(errorCode: number, errorMessage: string): void
-    {
-        this.listeners.forEach((listener: ICreatePageListener) => listener.onContractCompiledError(errorCode, errorMessage));
-    }
-
-    private fireContractDeployedEvent(): void
-    {
-        this.listeners.forEach((listener: ICreatePageListener) => listener.onContractDeployed());
+        this.listeners.push(listener);
     }
 
     public async compileContract(contract: ContractToCompile): Promise<void>
     {
+        // Call the internal compile api
         const response = await fetch('/api/contract/compile', {
             method: 'POST',
             headers: {
@@ -94,6 +67,7 @@ class CreatePageController extends BaseController
         });
         if (response.status === StatusCodes.OK)
         {
+            // Convert the response to JSON
             const jsonResponse = await response.json();
             if (jsonResponse.success)
             {
@@ -105,10 +79,15 @@ class CreatePageController extends BaseController
                 this.fireContractCompiledEvent();
                 return jsonResponse.result;
             }
+
+            // If there is any error (reported by the API)
             if (jsonResponse.error)
             {
                 this.contractCompiled = false;
-                this.fireContractCompiledErrorEvent(jsonResponse.error.errorCode, jsonResponse.error.errorMessage);
+                this.fireContractCompiledErrorEvent(
+                    jsonResponse.error.errorCode,
+                    jsonResponse.error.errorMessage
+                );
                 return jsonResponse.result;
             }
         }
@@ -116,21 +95,68 @@ class CreatePageController extends BaseController
 
     public async deployContract(): Promise<boolean>
     {
+        // First check that the contract has been compiled
         if (this.contractCompiled)
         {
             let args: any = [];
+
+            // If the contract is ERC20 we add name and symbol
             if (this.contract.contractType === 'ERC20')
             {
                 args.push(this.contract.arguments.tokenName);
                 args.push(this.contract.arguments.tokenSymbol);
             }
-            this.contract.deployedAddress = await ContractDeployer
-                .deploy(this.contract.compiled.contracts[this.contract.contractType], args);
+
+            // Obtain the correct contract from the compiled contracts
+            let compiledContract = this.contract.compiled.contracts[this.contract.contractType]
+            this.contract.deployedAddress = await ContractDeployer.deploy(compiledContract, args);
+
+            // The contract has been succefully deployed
             this.fireContractDeployedEvent();
             this.contractDeployed = true;
             return true;
         }
         return false;
+    }
+
+    // Event is fired when the page becomes enabled / disabled
+    private firePageEnabledEvent(isEnabled: boolean): void
+    {
+        this.listeners.forEach((listener: ICreatePageListener) =>
+            listener.onPageEnabled(isEnabled)
+        );
+    }
+
+    // Event is fired when the contract type is changed
+    private fireContractChangedEvent(): void
+    {
+        this.listeners.forEach((listener: ICreatePageListener) =>
+            listener.onContractChanged()
+        );
+    }
+
+    // Event is fired when the contract gets compiled
+    private fireContractCompiledEvent(): void
+    {
+        this.listeners.forEach((listener: ICreatePageListener) =>
+            listener.onContractCompiled()
+        );
+    }
+
+    // Event is fired when the contract gets a compilation error
+    private fireContractCompiledErrorEvent(errorCode: number, errorMessage: string): void
+    {
+        this.listeners.forEach((listener: ICreatePageListener) =>
+            listener.onContractCompiledError(errorCode, errorMessage)
+        );
+    }
+
+    // Event is fired when the contract gets deployed
+    private fireContractDeployedEvent(): void
+    {
+        this.listeners.forEach((listener: ICreatePageListener) =>
+            listener.onContractDeployed()
+        );
     }
 }
 
