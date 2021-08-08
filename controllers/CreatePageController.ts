@@ -26,6 +26,7 @@ class CreatePageController extends BaseController
     private listeners: ICreatePageListener[] = [];
 
     private contractCompiled: boolean = false;
+    private contractDeployed: boolean = false;
 
     private contract: ControllerContract = {
         contractType: '',
