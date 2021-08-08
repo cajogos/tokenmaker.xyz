@@ -12,7 +12,7 @@ const TutorialPage = ({ tutorial }: TutorialPageProps) =>
     return (
         <>
             <Head>
-                <title>How to create your own ERC20 Token | TokenMaker.xyz</title>
+                <title>How to create your own ERC20 Token | TokenMaker</title>
             </Head>
             <div dangerouslySetInnerHTML={{ __html: tutorial }} />
         </>

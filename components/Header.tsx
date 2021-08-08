@@ -22,7 +22,7 @@ const Header = () =>
                         <a className="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
                             <div className={headerStyles.logo}>
                                 <Image src="/images/ethereum.svg" width="24" height="24" />
-                                <span>TokenMaker.xyz</span>
+                                <span>TokenMaker</span>
                                 <small>Decentralised-Tokens-as-a-Service</small>
                             </div>
                         </a>

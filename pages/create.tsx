@@ -99,7 +99,7 @@ class CreatePage extends React.Component<CreatePageProps, CreatePageState>
         return (
             <>
                 <Head>
-                    <title>Create a Token | TokenMaker.xyz</title>
+                    <title>Create a Token | TokenMaker</title>
                 </Head>
                 <h2>Create your Token {this.state.walletInstalled && !this.state.walletConnected ? <span className="badge bg-danger"><FaExclamationTriangle /> Connect Your Wallet</span> : ''}</h2>
                 {this.state.walletInstalled ?

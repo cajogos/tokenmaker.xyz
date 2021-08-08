@@ -1,11 +1,9 @@
-# Token Maker ([tokenmaker.xyz](https://tokenmaker.xyz))
+# Token Maker
 
 ## TODOs
 
-- FAQs & Tutorial Page
-  - User guide
 - Find suitable testing suite to test the frontend
-- Deploy to live on TokenMaker.xyz
+- Deploy to live on TokenMaker
 
 ### Maybes
 

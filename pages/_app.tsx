@@ -13,7 +13,7 @@ const MyApp = ({ Component, pageProps }: AppProps) =>
     return (
         <>
             <Head>
-                <title>TokenMaker.xyz</title>
+                <title>TokenMaker</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
             <Layout>

@@ -27,7 +27,7 @@ const FAQsPage = () =>
     return (
         <>
             <Head>
-                <title>FAQs | TokenMaker.xyz</title>
+                <title>FAQs | TokenMaker</title>
             </Head>
             <h1>Frequently Asked Questions (FAQs)</h1>
             <p>These are some of the mostly asked questions for users of TokenMaker. The list grows as needed.</p>
