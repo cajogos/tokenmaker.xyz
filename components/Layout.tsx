@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
+import Disclaimer from './Disclaimer';
 
 type LayoutProps = {
     children: JSX.Element
@@ -16,6 +17,7 @@ const Layout = ({ children }: LayoutProps) =>
                 <meta name="robots" content="noindex" />
             </Head>
             <Header />
+            <Disclaimer />
             <div className="content-wrapper container">{children}</div>
             <Footer />
         </>
