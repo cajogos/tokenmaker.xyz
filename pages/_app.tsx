@@ -16,6 +16,7 @@ const MyApp = ({ Component, pageProps }: AppProps) =>
             <Head>
                 <title>TokenMaker</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="robots" content="noindex" />
             </Head>
             <Layout>
                 <Component {...pageProps} />
