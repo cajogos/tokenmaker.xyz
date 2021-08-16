@@ -2,7 +2,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
 // Components
-import Layout from '../components/Layout'
+import Layout from '../components/Layout';
 
 // Styles
 import 'bootstrap/dist/css/bootstrap.css';
