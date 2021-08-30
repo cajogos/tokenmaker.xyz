@@ -111,7 +111,7 @@ class CreatePageController extends BaseController
             let compiledContract = this.contract.compiled.contracts[this.contract.contractType]
             this.contract.deployedAddress = await ContractDeployer.deploy(compiledContract, args);
 
-            // The contract has been succefully deployed
+            // The contract has been successfully deployed
             this.fireContractDeployedEvent();
             this.contractDeployed = true;
             return true;
