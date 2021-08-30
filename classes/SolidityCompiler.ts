@@ -41,7 +41,7 @@ class SolidityCompiler
         const compiled: string = solc.compile(processed);
         const parsed: CompilerOutput = JSON.parse(compiled);
 
-        // Once the array of contracts is parsed - prepare a better ouput (SolidityCompilerResult)
+        // Once the array of contracts is parsed - prepare a better output (SolidityCompilerResult)
         const compiledContracts = parsed.contracts[contractName];
         let contracts: ContractResult = {};
         for (var key in compiledContracts)
