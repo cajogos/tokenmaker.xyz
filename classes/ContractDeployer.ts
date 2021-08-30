@@ -11,7 +11,7 @@ class ContractDeployer
         // Obtain the accounts currently in use by the wallet provider
         const accounts = await web3.eth.getAccounts();
 
-        // Preparet the contract object using its bytecode and arguments
+        // Prepare the contract object using its bytecode and arguments
         let contractToDeploy = new web3.eth.Contract(compiledContract.abi).deploy({
             data: compiledContract.bytecode.object,
             arguments: args
