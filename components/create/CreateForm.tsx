@@ -163,7 +163,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
     render()
     {
         return (
-            <form onSubmit={this.onFormSubmission.bind(this)}>
+            <form onSubmit={this.onFormSubmission.bind(this)} autoComplete="off">
                 <div className="mb-3">
                     <label className="form-label">Contract Type</label>
                     <select className="form-select"
