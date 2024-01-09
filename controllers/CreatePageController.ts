@@ -18,7 +18,7 @@ type ControllerContract = {
             [key: string]: CompiledContract;
         }
     };
-    deployedAddress: string | null;
+    deployedAddress: string | undefined;
 };
 
 class CreatePageController extends BaseController
@@ -31,7 +31,7 @@ class CreatePageController extends BaseController
         contractType: '',
         arguments: {},
         compiled: { contracts: {} },
-        deployedAddress: null
+        deployedAddress: undefined
     };
     public getContract(): ControllerContract
     {

@@ -85,11 +85,12 @@ const HandleContractERC20 = (res: NextApiResponse<ExpectedResponse>, args: ERC20
     }
 
     // The contract's initial supply must be multiplied by the power of 10 on the number of decimals (18 default)
-    let realInitialSupply = Web3.utils.toBN(initialSupplyNumber).mul(
-        Web3.utils.toBN(10).pow(
-            Web3.utils.toBN(18)
-        )
-    );
+    // let realInitialSupply = toBN(initialSupplyNumber).mul(
+    //     toBN(10).pow(
+    //         toBN(18)
+    //     )
+    // ); // TODO: toBN is no longer defined
+    let realInitialSupply = 0; // TODO: Fix this
     let contract = new ERC20();
     contract.addArgument(tokenName);
     contract.addArgument(tokenSymbol);

@@ -3,7 +3,7 @@ import Web3 from 'web3';
 // This sole purpose of this class is to deploy contracts on the blockchain
 class ContractDeployer
 {
-    public static async deploy(compiledContract: CompiledContract, args: any = []): Promise<string>
+    public static async deploy(compiledContract: CompiledContract, args: any = []): Promise<string | undefined>
     {
         // Load up the Web3 object for the MetaMask provider
         const web3 = new Web3(Web3.givenProvider);
@@ -25,7 +25,7 @@ class ContractDeployer
         // Initiate the contract deployment call
         const contractDeployed = await contractToDeploy.send({
             from: accounts[0],
-            gas: gasEstimates,
+            gas: gasEstimates.toString(),
             gasPrice: web3.utils.toWei('30', 'gwei')
         });
 

@@ -136,7 +136,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
     // Gets a button to Ethercan (only works on public testnets)
     private getEtherscanButton(): JSX.Element
     {
-        const tokenAddress = this.props.pageManager.getContract().deployedAddress;
+        const tokenAddress = this.props.pageManager.getContract().deployedAddress as string;
         const networkId = MetaMaskConnector.getInstance().getCurrentNetwork();
         const accountAddress = MetaMaskConnector.getInstance().getCurrentAccount();
         if (tokenAddress === null || networkId === null || accountAddress === null)
@@ -164,7 +164,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
     // Function to allow to easily add the new token to MetaMask wallet
     private async addTokenToWallet(): Promise<void>
     {
-        const deployedAddress = this.props.pageManager.getContract().deployedAddress;
+        const deployedAddress = this.props.pageManager.getContract().deployedAddress as string;
         if (deployedAddress === null) return;
 
         const tokenSymbol = this.props.pageManager.getContract().arguments.tokenSymbol;
