@@ -1,10 +1,6 @@
 # Token Maker
 
-**Author:** Carlos Jorge Lima Ferreira (w1754823)
-
-**Institution:** University of Westminster
-
-**Course:** MSc Advanced Software Engineering
+An easy way to make ERC20 tokens written in TypeScript.
 
 ## Development Mode
 
