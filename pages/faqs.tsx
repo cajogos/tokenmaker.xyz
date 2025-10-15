@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Head from 'next/head';
-import { faqs } from '../data/faqs.json';
+import faqsData from '../data/faqs.json';
 
 type FAQs = {
     question: string;
@@ -56,7 +56,7 @@ const FAQsPage = ({ faqs }: FAQsPageProps) =>
 // Load the FAQs from a given JSON file
 export async function getStaticProps()
 {
-    return { props: { faqs }};
+    return { props: { faqs: faqsData.faqs } };
 }
 
 export default FAQsPage;

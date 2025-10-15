@@ -1,5 +1,5 @@
-import remark from 'remark';
-import html from 'remark-html';
+import { remark } from 'remark';
+import remarkHtml from 'remark-html';
 import fs from 'fs';
 import path from 'path';
 
@@ -10,7 +10,7 @@ class MarkdownParser
     public static async parse(fileName: string): Promise<string>
     {
         const fileContents = await MarkdownParser.getFileContent(fileName);
-        const result = await remark().use(html).process(fileContents);
+        const result = await remark().use(remarkHtml).process(fileContents);
         return result.toString();
     }
 
