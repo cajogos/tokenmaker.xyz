@@ -1,10 +1,11 @@
+import React from 'react';
 import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
 import Disclaimer from './Disclaimer';
 
 type LayoutProps = {
-    children: JSX.Element
+    children: React.ReactNode
 };
 
 // This is the main layout used throughout the application

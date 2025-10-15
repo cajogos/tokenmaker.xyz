@@ -17,7 +17,7 @@ type TokenDetailsState = {
     compiled: boolean;
     deploying: boolean;
     deployed: boolean;
-    detailsHTML: JSX.Element;
+    detailsHTML: React.ReactElement;
     tokenAddedToWallet: boolean;
 };
 
@@ -72,7 +72,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
 
     public onContractCompiledError(errorCode: number, errorMessage: string): void { }
 
-    private getDetailsHTML(contracts: any, args: any): JSX.Element
+    private getDetailsHTML(contracts: any, args: any): React.ReactElement
     {
         // This returns a JSX element with the contract details
         return (
@@ -134,7 +134,7 @@ class TokenDetails extends React.Component<TokenDetailsProps, TokenDetailsState>
     }
 
     // Gets a button to Ethercan (only works on public testnets)
-    private getEtherscanButton(): JSX.Element
+    private getEtherscanButton(): React.ReactElement
     {
         const tokenAddress = this.props.pageManager.getContract().deployedAddress as string;
         const networkId = MetaMaskConnector.getInstance().getCurrentNetwork();

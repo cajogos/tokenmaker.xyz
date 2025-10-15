@@ -110,7 +110,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState>
         this.setState({ params: currentParams });
     }
 
-    private renderForContractType(): JSX.Element
+    private renderForContractType(): React.ReactElement
     {
         // Display the params for the Counter contract (test contract)
         if (this.state.contractType === CreateForm.CONTRACT_TYPE_COUNTER)
